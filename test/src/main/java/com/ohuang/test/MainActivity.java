@@ -1,6 +1,11 @@
 package com.ohuang.test;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Build;
@@ -41,38 +46,20 @@ public static final String TAG="MainActivity";
         try {
 
             String[] list = getAssets().list("");
-            viewById.setText(Arrays.toString(list));
+            if (viewById!=null) {
+                viewById.setText(Arrays.toString(list));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        findViewById(R.id.tv_main).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"你點擊了",Toast.LENGTH_LONG).show();
-            }
-        });
+
 
 //        getSupportFragmentManager().beginTransaction().add(R.id.fl_main,new BlankFragment()).commit();
     }
 
-    @Override
-    public Resources getResources() {
-        if (ResPatch.sm_resources!=null){
-            return ResPatch.sm_resources;
-        }else {
-            return super.getResources();
-        }
-//        return getApplicationContext().getResources();
-    }
 
-    @Override
-    public AssetManager getAssets() {
-        if (ResPatch.sm_resources!=null){
-            return ResPatch.sm_resources.getAssets();
-        }else {
-            return super.getAssets();
-        }
-//        return getApplicationContext().getAssets();
-    }
+
+
+
 }

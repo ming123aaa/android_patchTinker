@@ -13,6 +13,8 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ohuang.patchuptate.tinker.TinkerResourcePatcher;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -29,10 +31,25 @@ public class ResPatch {
         if (!isEnable){
             return;
         }
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.P) {
-            fn_patch_res(context, str_ori);
-        }else {
-            hook_patch_res(context,str_ori);
+        tinkerResPatch(context, str_ori);
+//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.P) {
+//            fn_patch_res(context, str_ori);
+//        }else {
+//            hook_patch_res(context,str_ori);
+//        }
+    }
+
+    /**
+     * tinker资源热更新方案
+     * @param context
+     * @param str_ori
+     */
+    public static void tinkerResPatch(Context context,String str_ori){
+        try {
+            TinkerResourcePatcher.isResourceCanPatch(context);
+            TinkerResourcePatcher.monkeyPatchExistingResources(context,str_ori,false);
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
@@ -68,7 +85,12 @@ public class ResPatch {
             AssetManager objAm = (AssetManager) context.getAssets();
             Method method = cAm.getDeclaredMethod("addAssetPath", String.class);
             method.invoke(objAm, str_ori);
-            sm_resources = new Resources(objAm, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
+
+
+            AssetManager assetManager= (AssetManager) cAm.newInstance();
+            method.invoke(assetManager,str_ori);
+            method.invoke(assetManager,context.getApplicationInfo().sourceDir);
+            sm_resources = new Resources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
             str_res_path = str_ori;
         } catch (Exception e) {
             Log.d("xfhsm", "fn_patch_res-try::" + e.toString());

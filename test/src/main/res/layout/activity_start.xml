@@ -11,12 +11,29 @@
         android:id="@+id/btn_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="打开Main"
+        android:text="mian"
         />
+
+    <TextView
+        android:id="@+id/tv_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#0f0"
+        android:text="may you new new"/>
+    <EditText
+        android:id="@+id/edit_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <Button
         android:id="@+id/btn_start2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="小貓咪"
+        android:text="热更新"
+        />
+    <Button
+        android:id="@+id/btn_restart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="重启测试"
         />
 </LinearLayout>

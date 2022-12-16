@@ -3,9 +3,14 @@ package com.ohuang.test;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ohuang.patchuptate.Patch;
@@ -14,6 +19,10 @@ import com.ohuang.patchuptate.ResPatch;
 
 import java.io.IOException;
 
+import ad.manager.download.DownLoadUtil;
+import ad.manager.download.SimpleDownLoadListener;
+import ad.manager.download.SimpleDownLoadTask;
+
 public class StartActivity extends Activity {
 
 
@@ -21,7 +30,7 @@ public class StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        ResPatch.replaceActivityResources(this,ResPatch.sm_resources);
-        Toast.makeText(this,"新补丁",Toast.LENGTH_LONG).show();
+
         setContentView(R.layout.activity_start);
         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,27 +41,82 @@ public class StartActivity extends Activity {
         findViewById(R.id.btn_start2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String str_patch_apk = StartActivity.this.getFilesDir().getAbsolutePath() + "/app.apk";
-                Toast.makeText( StartActivity.this,"开始加载补丁",Toast.LENGTH_LONG).show();
-                try {
-                    PatchUtil.getInstance().loadPatchApk( StartActivity.this,str_patch_apk);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Toast.makeText(StartActivity.this,"加载完成",Toast.LENGTH_LONG).show();
-                v.postDelayed(new Runnable() {
+                EditText viewById = findViewById(R.id.edit_url);
+                DownLoadUtil.download(StartActivity.this, viewById.getText().toString(), new SimpleDownLoadListener() {
                     @Override
-                    public void run() {
-                        Intent intent = new Intent(StartActivity.this, StartActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        System.exit(0);
+                    public void onError(SimpleDownLoadTask downloadTask, Exception e) {
+                        Toast.makeText(StartActivity.this,"下载失败",Toast.LENGTH_LONG).show();
                     }
-                },1000);
+
+                    @Override
+                    public void onSuccess(SimpleDownLoadTask downloadTask) {
+                        String str_patch_apk = downloadTask.getFile().getAbsolutePath();
+                        Toast.makeText( StartActivity.this,"开始加载补丁",Toast.LENGTH_LONG).show();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    PatchUtil.getInstance().loadPatchApk( StartActivity.this,str_patch_apk);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                               v.post(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       Toast.makeText(StartActivity.this,"加载完成",Toast.LENGTH_LONG).show();
+
+                                   }
+                               });
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        Intent intent = new Intent(StartActivity.this, StartActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        System.exit(0);
+                                    }
+                                },1000);
+                            }
+                        }).start();
+
+                    }
+                });
+
 
             }
         });
+
+        findViewById(R.id.btn_restart).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restartApp(StartActivity.this);
+            }
+        });
+        Toast.makeText(this,"asasa",Toast.LENGTH_LONG).show();
+    }
+
+    private static void restartApp(Context mContext){
+
+        Intent intent = mContext.getPackageManager()
+                .getLaunchIntentForPackage(mContext.getPackageName());
+        PendingIntent restartIntent=null;
+        if (Build.VERSION.SDK_INT>=31){
+            restartIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT|PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            restartIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        }
+        AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent);
+        exitApp();
+    }
+    public static void exitApp() {
+
+        int id = android.os.Process.myPid();
+        if (id != 0) {
+            android.os.Process.killProcess(id);
+        }
+
     }
 
 

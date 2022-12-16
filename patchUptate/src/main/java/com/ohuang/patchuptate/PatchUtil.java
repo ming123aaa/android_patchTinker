@@ -24,6 +24,11 @@ import java.util.zip.ZipInputStream;
 public class PatchUtil {
     public static final String TAG = "PatchUtil";
     public static Patch patch;
+    public static final String rootPath="/ohPatch";
+    public static final String dexPath=rootPath+"/dex.apk";
+    public static final String resApk=rootPath+"/res.apk";
+    public static final String lib=rootPath+"/lib";
+    public static final String temp=rootPath+"/temp";
 
     private PatchUtil() {
     }
@@ -36,8 +41,11 @@ public class PatchUtil {
         return InstanceHolder.instance;
     }
 
-    public void init(Context base) {
-        new File(base.getFilesDir().getAbsolutePath()).mkdirs();
+    public void init(Context context){
+        hotUpdate(context);
+    }
+
+    public void hotUpdate(Context base) {
         Log.d(TAG, "init: supportedAbis="+ Arrays.toString(Build.SUPPORTED_ABIS));
         Log.d(TAG, "init: nativeLibraryDir="+base.getApplicationInfo().nativeLibraryDir);
         Log.d(TAG, "init: nativeLibraryDir="+new File(base.getApplicationInfo().nativeLibraryDir).getName());
@@ -46,11 +54,11 @@ public class PatchUtil {
             Log.d(TAG, "init: 没有补丁或上次补丁加载失败");
             return;
         }
-        String str_patch_apk = base.getFilesDir().getAbsolutePath() + "/base.apk";
+        String str_patch_apk = base.getFilesDir().getAbsolutePath() +dexPath;
 
         File f = new File(str_patch_apk);
 
-        String str_lib_cache_dir = base.getFilesDir().getAbsolutePath();//lib和cache目录必须在/data/data/包名 的目录下！
+        String str_lib_cache_dir = base.getFilesDir().getAbsolutePath()+rootPath;//lib和cache目录必须在/data/data/包名 的目录下！
 
         if (f.exists()) {
             Log.d(TAG, "init: 开始热更新");
@@ -64,42 +72,42 @@ public class PatchUtil {
             switch (name){
                 case "arm64":
                     if (contains(supportedAbis,"arm64-v8a")){
-                        File file = new File(str_lib_cache_dir + File.separator + "adpatchlib/arm64-v8a" );
+                        File file = new File(str_lib_cache_dir + File.separator + "lib/arm64-v8a" );
                         if (file.exists()) {
-                            soPath = str_lib_cache_dir + File.separator + "adpatchlib/arm64-v8a";
+                            soPath = str_lib_cache_dir + File.separator + "lib/arm64-v8a";
                         }
                     }
                     break;
                 case "arm":
                     if (contains(supportedAbis,"armeabi-v7a")){
-                        File file = new File(str_lib_cache_dir + File.separator + "adpatchlib/armeabi-v7a" );
+                        File file = new File(str_lib_cache_dir + File.separator + "lib/armeabi-v7a" );
                         if (file.exists()) {
-                            soPath = str_lib_cache_dir + File.separator + "adpatchlib/armeabi-v7a";
+                            soPath = str_lib_cache_dir + File.separator + "lib/armeabi-v7a";
                         }
                     }
                     if (soPath==null){
                         if (contains(supportedAbis,"armeabi")){
-                            File file = new File(str_lib_cache_dir + File.separator + "adpatchlib/armeabi" );
+                            File file = new File(str_lib_cache_dir + File.separator + "lib/armeabi" );
                             if (file.exists()) {
-                                soPath = str_lib_cache_dir + File.separator + "adpatchlib/armeabi";
+                                soPath = str_lib_cache_dir + File.separator + "lib/armeabi";
                             }
                         }
                     }
                     break;
                 case "x86":
                     if (contains(supportedAbis,"x86")){
-                        File file = new File(str_lib_cache_dir + File.separator + "adpatchlib/x86" );
+                        File file = new File(str_lib_cache_dir + File.separator + "lib/x86" );
                         if (file.exists()) {
-                            soPath = str_lib_cache_dir + File.separator + "adpatchlib/x86";
+                            soPath = str_lib_cache_dir + File.separator + "lib/x86";
                         }
                     }
                     break;
             }
             if (soPath==null) {
                 for (String supportedAbi : supportedAbis) {
-                    File file = new File(str_lib_cache_dir + File.separator + "adpatchlib/" + supportedAbi);
+                    File file = new File(str_lib_cache_dir + File.separator + "lib/" + supportedAbi);
                     if (file.exists()) {
-                        soPath = str_lib_cache_dir + File.separator + "adpatchlib/" + supportedAbi;
+                        soPath = str_lib_cache_dir + File.separator + "lib/" + supportedAbi;
                         break;
                     }
                 }
@@ -108,9 +116,10 @@ public class PatchUtil {
                 Log.d(TAG, "init: soPath="+soPath);
                 patch.fn_patch_lib(base, soPath);  //so库热更新
             }
-            ResPatch.getResPatch(base, str_patch_apk);  //资源热更新
+            ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + resApk);  //资源热更新
 
         }
+
     }
 
     public boolean contains(Object[] objects,Object o){
@@ -134,7 +143,7 @@ public class PatchUtil {
             return;
         }
         SPUtil.getInstance("PatchUtil").put(context, "isLoader", false);
-        String str_patch_apk = context.getFilesDir().getAbsolutePath() + "/base.apk";
+        String str_patch_apk = context.getFilesDir().getAbsolutePath() + dexPath;
         File file2 = new File(str_patch_apk);
         if (file2.exists()){
             file2.delete();
@@ -143,15 +152,36 @@ public class PatchUtil {
             file2.getParentFile().mkdirs();
         }
         FileUtils.copyFileUsingFileStreams(file1, file2);
-        String str_lib_cache_dir = context.getFilesDir().getAbsolutePath();//lib和cache目录必须在/data/data/包名 的目录下！
-        String libPath = str_lib_cache_dir + File.separator + "adpatchlib/";
+        String str_lib_cache_dir = context.getFilesDir().getAbsolutePath()+rootPath;//lib和cache目录必须在/data/data/包名 的目录下！
+        String libPath = str_lib_cache_dir + File.separator + "lib/";
         File file = new File(libPath);
         if (file.exists()) {
             FileUtils.delete(file);
             file.mkdirs();
         }
         copyApkLib(path,libPath);
+        toResApk(context,path);
+
         SPUtil.getInstance("PatchUtil").put(context, "isLoader", true);
+    }
+    
+    private void toResApk(Context context,String path) throws IOException {
+//        File file1 = new File(path);
+//        String str_patch_apk = context.getFilesDir().getAbsolutePath() + resApk;
+//        File file2 = new File(str_patch_apk);
+//        if (file2.exists()){
+//            file2.delete();
+//        }
+//        if (file2.getParentFile()!=null){
+//            file2.getParentFile().mkdirs();
+//        }
+//        FileUtils.copyFileUsingFileStreams(file1, file2);
+
+        ResApk.toResApk(context,path);
+        File file = new File(context.getFilesDir().getAbsolutePath() + PatchUtil.temp);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
 

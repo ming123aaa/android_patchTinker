@@ -296,5 +296,14 @@ public class FileUtils {
         }
     }
 
+    public static void createParentDir(String name){
+        File file=new File(name);
+        if (file.getParentFile() != null){
+            file.getParentFile().mkdirs();
+        }
+    }
+
+
+
 
 }

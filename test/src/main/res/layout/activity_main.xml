@@ -11,14 +11,21 @@
         android:id="@+id/tv_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="如何评价？"
+        android:text="评价超市？"
         android:textColor="#0f0"
        />
-    <Button
+    <ImageView
+        android:id="@+id/iv_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="測你"
+        android:src="@mipmap/ic_launcher"/>
+    <Button
+        android:id="@+id/sadas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yyds"
        />
+
 
     <FrameLayout
         android:id="@+id/fl_main2"

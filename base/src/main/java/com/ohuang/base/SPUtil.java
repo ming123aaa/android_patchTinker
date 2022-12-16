@@ -174,15 +174,6 @@ public class SPUtil {
          * @param editor
          */
         public static void apply(SharedPreferences.Editor editor) {
-            try {
-                if (sApplyMethod != null) {
-                    sApplyMethod.invoke(editor);
-                    return;
-                }
-            } catch (IllegalArgumentException e) {
-            } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
-            }
             editor.commit();
         }
     }

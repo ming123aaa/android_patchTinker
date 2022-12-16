@@ -28,22 +28,23 @@ public class AppImpl {
 
 
     public static void onCreate(Application application) {
-
+         Application myApp=application;
         if (app != null) {
 
             LoadDexUtil.replaceAndRunMainApplication(app);
-            app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
+            myApp=app;
 
-
-                @Override
-                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                    super.onActivityCreated(activity, savedInstanceState);
-                    ResPatch.replaceActivityResources(activity, ResPatch.sm_resources);
-                    Log.d(TAG, "onActivityCreated: "+activity);
-                }
-            });
         }
+        myApp.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
 
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                super.onActivityCreated(activity, savedInstanceState);
+//                ResPatch.replaceActivityResources(activity, ResPatch.sm_resources);
+                Log.d(TAG, "onActivityCreated: "+activity);
+            }
+        });
     }
 
 
