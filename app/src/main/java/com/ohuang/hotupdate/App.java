@@ -15,6 +15,7 @@ import android.util.Log;
 import com.ohuang.patchuptate.LoadDexUtil;
 import com.ohuang.patchuptate.Patch;
 import com.ohuang.patchuptate.PatchUtil;
+import com.ohuang.patchuptate.RefInvoke;
 import com.ohuang.patchuptate.ResPatch;
 
 import java.io.File;
@@ -33,7 +34,8 @@ public class App extends Application {
 
         PatchUtil.getInstance().init(base);
         super.attachBaseContext(base);
-        AppImpl.attachBaseContext(base, this);
+        RefInvoke.invokeStaticMethod("ad.manager.main.AppImpl","attachBaseContext"
+                ,new Class[]{Context.class},new Object[]{base});
 
     }
 
@@ -41,7 +43,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppImpl.onCreate(this);
+        RefInvoke.invokeStaticMethod("ad.manager.main.AppImpl","onCreate"
+                ,new Class[]{Application.class},new Object[]{this});
     }
 
 

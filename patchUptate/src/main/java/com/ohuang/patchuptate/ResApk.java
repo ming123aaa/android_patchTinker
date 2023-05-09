@@ -2,11 +2,10 @@ package com.ohuang.patchuptate;
 
 import android.content.Context;
 
-import com.ohuang.base.CopyFileUtil;
-import com.ohuang.base.FileUtils;
-import com.ohuang.base.ZipUtil;
 
-import java.io.File;
+import com.ohuang.patchuptate.util.CopyFileUtil;
+import com.ohuang.patchuptate.util.FileUtils;
+import com.ohuang.patchuptate.util.ZipUtil;
 
 public class ResApk {
 

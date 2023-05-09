@@ -21,7 +21,7 @@ public class AppImpl {
     private static final String APP_KEY = "Application_Name";
     public static final String TAG = "AppImpl";
 
-    public static void attachBaseContext(Context context, Application application) {
+    public static void attachBaseContext(Context context) {
         app = LoadDexUtil.makeApplication(getSrcApplicationClassName(context));
 
     }

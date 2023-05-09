@@ -43,6 +43,16 @@ public static final String TAG="MainActivity";
 
         Log.d(TAG, "onCreate: "+R.id.tv_main);
         TextView viewById = findViewById(R.id.tv_main);
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    startActivity(new Intent(MainActivity.this,Class.forName("com.ohuang.hotupdate.TestActivity")));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         try {
 
             String[] list = getAssets().list("");

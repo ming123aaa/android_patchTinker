@@ -4,6 +4,7 @@
     package="com.ohuang.hotupdate">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -16,10 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HotUpdate"
         tools:targetApi="31">
+        <activity
+            android:name=".TestActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="Application_Name"
             android:value="com.ohuang.hotupdate.TestApp" />
-
     </application>
 
 </manifest>

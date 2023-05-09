@@ -1,4 +1,4 @@
-package com.ohuang.base;
+package com.ohuang.patchuptate.util;
 
 import android.app.Activity;
 import android.content.Context;
