@@ -34,7 +34,7 @@ public class App extends Application {
 
         PatchUtil.getInstance().init(base);
         super.attachBaseContext(base);
-        RefInvoke.invokeStaticMethod("ad.manager.main.AppImpl","attachBaseContext"
+        RefInvoke.invokeStaticMethod("com.ohuang.hotupdate.AppImpl","attachBaseContext"
                 ,new Class[]{Context.class},new Object[]{base});
 
     }
@@ -43,7 +43,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        RefInvoke.invokeStaticMethod("ad.manager.main.AppImpl","onCreate"
+        RefInvoke.invokeStaticMethod("com.ohuang.hotupdate.AppImpl","onCreate"
                 ,new Class[]{Application.class},new Object[]{this});
     }
 

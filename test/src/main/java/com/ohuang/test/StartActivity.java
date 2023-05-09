@@ -17,6 +17,7 @@ import com.ohuang.patchuptate.Patch;
 import com.ohuang.patchuptate.PatchUtil;
 import com.ohuang.patchuptate.ResPatch;
 
+import java.io.File;
 import java.io.IOException;
 
 import ad.manager.download.DownLoadUtil;
@@ -68,6 +69,7 @@ public class StartActivity extends Activity {
 
                                     }
                                 });
+                                new File(str_patch_apk).delete();
                                 v.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
