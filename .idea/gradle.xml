@@ -12,10 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/demo" />
-            <option value="$PROJECT_DIR$/download" />
-            <option value="$PROJECT_DIR$/patchUptate" />
-            <option value="$PROJECT_DIR$/test" />
+            <option value="$PROJECT_DIR$/patchTinker" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -6,10 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".App"
+        android:name=".TkApp"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/ad_manager_network"
@@ -24,6 +22,28 @@
         <meta-data
             android:name="Application_Name"
             android:value="com.ohuang.hotupdate.TestApp" />
+        <activity
+
+            android:name="com.ohuang.hotupdate.MainActivity"
+            android:theme="@style/Theme.HotUpdate.Mainactivity"
+            android:exported="true" >
+
+        </activity>
+        <activity android:name="com.ohuang.hotupdate.StartActivity"
+            android:enabled="true"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".processPhoenix.ProcessPhoenix"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:process=":phoenix"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

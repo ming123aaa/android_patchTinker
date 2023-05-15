@@ -3,6 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url 'https://www.jitpack.io' }
     }
 }
 dependencyResolutionManagement {
@@ -10,15 +11,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url 'F:\\maven'
-        }
+        maven { url 'https://www.jitpack.io' }
+
     }
 }
 rootProject.name = "HotUpdate"
 include ':app'
-include ':patchUptate'
-include ':test'
-include ':demo'
+include ':patchTinker'
 
-include ':download'
+
+

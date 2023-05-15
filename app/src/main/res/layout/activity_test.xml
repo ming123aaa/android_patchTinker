@@ -4,25 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   android:orientation="vertical"
     android:background="@drawable/bg_app_1"
+    android:orientation="vertical"
     tools:context=".TestActivity">
 
     <TextView
         android:id="@+id/tv_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#fff"
-        android:text="123456" />
+        android:text="123456"
+        android:textColor="#fff" />
+
+<!--    <View-->
+<!--        android:id="@+id/iv_a"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:background="#f00" />-->
 
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/aichat"/>
-<!--    <ImageView-->
-<!--        android:id="@+id/iv_icon2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/aichat"/>-->
+        android:src="@drawable/aichat" />
+    <!--    <ImageView-->
+    <!--        android:id="@+id/iv_icon2"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:src="@drawable/aichat"/>-->
 </LinearLayout>
