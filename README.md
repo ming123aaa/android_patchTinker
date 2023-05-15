@@ -1,6 +1,9 @@
 ### 注意
-需要在 gradle.properties添加
-android.enableResourceOptimizations=false
+1.需要在 gradle.properties添加 android.enableResourceOptimizations=false 避免资源优化导致异常
+2.AndroidManifest.xml 无法热更。
+3.热更新框架本身无法被热更。
+4.热更后需要重启应用才能生效。
+
 ### 引用
 
 ```groovy
@@ -20,19 +23,16 @@ android.enableResourceOptimizations=false
 提供了3种初始化的方式
 
 方式1:
-这种方式接入最简单
-为了可以热更新需要配置Application
-AppImpl.java实现了代理application，通过配置androidManifest.xml设置代理application
 
-设app启动为:
 ```xml
 <application
-android:name="com.ohuang.patchuptate.PatchApplication">
+android:name="com.ohuang.patchtinker.PatchApplication">
     <meta-data android:name="Application_Name"
         android:value="com.ohuang.hotupdate.TestApp"/>
 </application>
 ```
-
+将application的name设置为com.ohuang.patchtinker.PatchApplication
+通过配置meta-data设置为自己的application   PatchApplication初始化热更后会自动替换成自己application
 
 方式2:
 类似于Tinker的接入方式
@@ -60,6 +60,8 @@ public class TkApp extends TinkerApplication {
 }
 
 ```
+TkApp类就无法通过热更修改
+
 ```xml
 <application
 android:name=".TkApp"/>
