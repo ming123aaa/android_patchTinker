@@ -1,20 +1,38 @@
 ### 注意
 需要在 gradle.properties添加
 android.enableResourceOptimizations=false
+### 引用
 
+```groovy
+	allprojects {
+    repositories {
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+```
+
+```groovy
+	dependencies {
+	        implementation 'com.github.ming123aaa:android_patchTinker:v1.0.0'
+	}
+```
 ### 初始化
 提供了3种初始化的方式
 
 方式1:
 这种方式接入最简单
-设app启动为:
-<application
-android:name="com.ohuang.patchuptate.PatchApplication"/>
-
 为了可以热更新需要配置Application
 AppImpl.java实现了代理application，通过配置androidManifest.xml设置代理application
-<meta-data android:name="Application_Name"
-android:value="com.ohuang.hotupdate.TestApp"/>
+
+设app启动为:
+```xml
+<application
+android:name="com.ohuang.patchuptate.PatchApplication">
+    <meta-data android:name="Application_Name"
+        android:value="com.ohuang.hotupdate.TestApp"/>
+</application>
+```
+
 
 方式2:
 类似于Tinker的接入方式
@@ -42,9 +60,11 @@ public class TkApp extends TinkerApplication {
 }
 
 ```
-
+```xml
 <application
 android:name=".TkApp"/>
+```
+
 
 方式3:
 手动调用补丁初始化方式
