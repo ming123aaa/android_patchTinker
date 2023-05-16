@@ -273,11 +273,11 @@ public class PatchUtil {
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_IsOldLoader, false);
         File rootFile = new File(context.getFilesDir().getAbsolutePath() + rootPath);
         if (rootFile.exists()) {
-            rootFile.delete();
+            FileUtils.delete(rootFile);
         }
         File oldRoot = new File(context.getFilesDir().getAbsolutePath() + oldrootPath);
         if (oldRoot.exists()) {
-            oldRoot.delete();
+            FileUtils.delete(oldRoot);
         }
 
     }
@@ -286,7 +286,7 @@ public class PatchUtil {
         String str_patch_apk = context.getFilesDir().getAbsolutePath() + dexPath;
         File file2 = new File(str_patch_apk);
         if (file2.exists()) {
-            file2.delete();
+            FileUtils.delete(file2);
         }
         if (file2.getParentFile() != null) {
             file2.getParentFile().mkdirs();
@@ -311,9 +311,8 @@ public class PatchUtil {
     private void toResApk(Context context, String path) throws IOException {
         ResApk.toResApk(context, path);
         File file = new File(context.getFilesDir().getAbsolutePath() + PatchUtil.temp);
-        FileUtils.delete(file);
         if (file.exists()) {
-            file.delete();
+            FileUtils.delete(file);
         }
     }
 
