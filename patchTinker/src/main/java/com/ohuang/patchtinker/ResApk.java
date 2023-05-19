@@ -25,11 +25,11 @@ public class ResApk {
         ZipUtil.upZipByName(baseApk, resources2, "resources.arsc");
 
         //资源文件复制
-        CopyFileUtil.copyPathAllFile(context.getFilesDir().getAbsolutePath() + PatchUtil.temp + "/baseApk"
-                ,context.getFilesDir().getAbsolutePath() + PatchUtil.temp + "/resApk","",false);
+        CopyFileUtil.copyPathAllFile(
+                context.getFilesDir().getAbsolutePath() + PatchUtil.temp + "/resApk",context.getFilesDir().getAbsolutePath() + PatchUtil.temp + "/baseApk","",true);
 
         //转res.apk
-        ZipUtil.toZip(context.getFilesDir().getAbsolutePath() + PatchUtil.resApk, context.getFilesDir().getAbsolutePath() + PatchUtil.temp + "/resApk", true);
+        ZipUtil.toZip(context.getFilesDir().getAbsolutePath() + PatchUtil.resApk, context.getFilesDir().getAbsolutePath() + PatchUtil.temp + "/baseApk", true);
 
     }
 }

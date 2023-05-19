@@ -18,7 +18,7 @@ public static final String TAG="TestActivity";
         findViewById(R.id.iv_icon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(TestActivity.this,"去死吧",Toast.LENGTH_LONG).show();
+                Toast.makeText(TestActivity.this,"testActivity",Toast.LENGTH_LONG).show();
             }
         });
 

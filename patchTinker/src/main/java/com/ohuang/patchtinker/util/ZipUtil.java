@@ -72,6 +72,10 @@ public class ZipUtil {
     }
 
     public static void upZipByName(String apkPath, String outPath, String dir) {
+        boolean b = outPath.endsWith("/") || outPath.endsWith("\\");
+        if (!b) {
+            outPath = outPath + "/";
+        }
 
 
         // 要进行解压缩的zip文件
@@ -91,6 +95,54 @@ public class ZipUtil {
 
                 if (zipEntryFileName.startsWith(dir) && !zipEntry.isDirectory()) {
                     String replace = zipEntryFileName.replace(dir, outPath);
+                    // 创建解压缩目录
+                    File targetDir = new File(replace);
+                    if (targetDir.getParentFile() != null) {
+                        targetDir.getParentFile().mkdirs(); // 创建目录
+                    }
+                    // 创建该文件的输出流
+
+                    // 输出流定义在try()块，结束自动清空缓冲区并关闭
+                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(replace))) {
+
+                        // 读取该子文件的字节内容
+                        byte[] buff = new byte[1024];
+                        int len = -1;
+                        while ((len = in.read(buff)) != -1) {
+                            bos.write(buff, 0, len);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void upZipByZipIntercept(String apkPath, String outPath, ZipIntercept zipIntercept) {
+        boolean b = outPath.endsWith("/") || outPath.endsWith("\\");
+        if (!b) {
+            outPath = outPath + "/";
+        }
+
+
+        // 要进行解压缩的zip文件
+        File zipFile = new File(apkPath);
+
+        // 1.创建解压缩目录
+        // 获取zip文件的名称
+        String zipFileName = zipFile.getName();
+
+        // 2.解析读取zip文件
+        try (ZipInputStream in = new ZipInputStream(new FileInputStream(zipFile))) {
+            // 遍历zip文件中的每个子文件
+            ZipEntry zipEntry = null;
+            while ((zipEntry = in.getNextEntry()) != null) {
+                // 获取zip压缩包中的子文件名称
+                String zipEntryFileName = zipEntry.getName();
+
+                if (zipIntercept.isCopy(zipEntryFileName) && !zipEntry.isDirectory()) {
+                    String replace = outPath+zipEntryFileName;
                     // 创建解压缩目录
                     File targetDir = new File(replace);
                     if (targetDir.getParentFile() != null) {
@@ -192,7 +244,7 @@ public class ZipUtil {
             File sourceFile = new File(sourceFileName);
             compress(sourceFile, zos, sourceFile.getName(), KeepDirStructure,true);
             long end = System.currentTimeMillis();//结束
-            System.out.println("压缩完成，耗时：" + (end - start) + " 毫秒");
+
         } catch (Exception e) {
             result = false;
             e.printStackTrace();
@@ -225,7 +277,7 @@ public class ZipUtil {
                 compress(srcFile, zos, srcFile.getName(), true,false);
             }
             long end = System.currentTimeMillis();
-            System.out.println("压缩完成，耗时：" + (end - start) + " 毫秒");
+
         } catch (Exception e) {
             throw new RuntimeException("zip error from ZipUtils", e);
         } finally {
@@ -294,6 +346,11 @@ public class ZipUtil {
                 }
             }
         }
+    }
+
+    public interface ZipIntercept{
+
+        boolean isCopy(String fileName);
     }
 
 

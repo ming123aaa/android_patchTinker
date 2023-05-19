@@ -240,6 +240,7 @@ public class PatchUtil {
      * @throws IOException
      */
     public void loadPatchApk(Context context, String path, boolean resIsUpdate) throws IOException {
+        long l = System.currentTimeMillis();
         File file1 = new File(path);
         if (!file1.exists()) {
             return;
@@ -262,6 +263,7 @@ public class PatchUtil {
 
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isLoader, true);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_IsOldLoader, false);
+        Log.d(TAG, "loadPatchApk: 加载补丁耗时:"+(System.currentTimeMillis()-l)+"ms");
     }
 
     /**
@@ -291,7 +293,7 @@ public class PatchUtil {
         if (file2.getParentFile() != null) {
             file2.getParentFile().mkdirs();
         }
-        FileUtils.copyFileUsingFileStreams(file1, file2);
+        DexApk.toDexApk(context,file1.getAbsolutePath(),file2.getAbsolutePath(),context.getFilesDir().getAbsolutePath()+temp);
         String str_lib_cache_dir = context.getFilesDir().getAbsolutePath() + rootPath;//lib和cache目录必须在/data/data/包名 的目录下！
         String libPath = str_lib_cache_dir + File.separator + "lib/";
         File file = new File(libPath);
@@ -306,14 +308,19 @@ public class PatchUtil {
         } else {
             ResPatch.setIsEnable(context, false);
         }
+        deleteTempFile(context);
+    }
+
+
+    private void deleteTempFile(Context context){
+        File tempFile = new File(context.getFilesDir().getAbsolutePath() + PatchUtil.temp);
+        if (tempFile.exists()) {
+            FileUtils.delete(tempFile);
+        }
     }
 
     private void toResApk(Context context, String path) throws IOException {
         ResApk.toResApk(context, path);
-        File file = new File(context.getFilesDir().getAbsolutePath() + PatchUtil.temp);
-        if (file.exists()) {
-            FileUtils.delete(file);
-        }
     }
 
     /**

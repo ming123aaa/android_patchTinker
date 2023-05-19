@@ -68,13 +68,13 @@ class DataSp {
             reader.close();
             return sbf.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+
                 }
             }
         }

@@ -214,7 +214,7 @@ public class FileUtils {
             reader.close();
             return sbf.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+
         } finally {
             if (reader != null) {
                 try {
