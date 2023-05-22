@@ -33,8 +33,7 @@ public class PatchUtil {
     static final String oldrootPath = "/oldohPatch";
     static final String dexPath = rootPath + "/dex.apk";
     static final String olddexPath = oldrootPath + "/dex.apk";
-    static final String resApk = rootPath + "/res.apk";
-    static final String oldresApk = oldrootPath + "/res.apk";
+
     static final String lib = rootPath + "/lib";
     static final String oldlib = oldrootPath + "/lib";
     static final String temp = rootPath + "/temp";
@@ -141,7 +140,7 @@ public class PatchUtil {
                 Log.d(TAG, "init: soPath=" + soPath);
                 patch.fn_patch_lib(base, soPath);  //so库热更新
             }
-            ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + resApk);  //资源热更新
+            ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + dexPath);  //资源热更新
 
         }
     }
@@ -209,7 +208,7 @@ public class PatchUtil {
                 Log.d(TAG, "init: soPath=" + soPath);
                 patch.fn_patch_lib(base, soPath);  //so库热更新
             }
-            ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + oldresApk);  //资源热更新
+            ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + olddexPath);  //资源热更新
 
         }
     }
@@ -293,7 +292,13 @@ public class PatchUtil {
         if (file2.getParentFile() != null) {
             file2.getParentFile().mkdirs();
         }
-        DexApk.toDexApk(context,file1.getAbsolutePath(),file2.getAbsolutePath(),context.getFilesDir().getAbsolutePath()+temp);
+        if (resIsUpdate) {
+            ResApk.toDexResApk(context,file1.getAbsolutePath(),file2.getAbsolutePath(),context.getFilesDir().getAbsolutePath()+temp);
+            ResPatch.setIsEnable(context, true);
+        } else {
+            DexApk.toDexApk(context,file1.getAbsolutePath(),file2.getAbsolutePath(),context.getFilesDir().getAbsolutePath()+temp);
+            ResPatch.setIsEnable(context, false);
+        }
         String str_lib_cache_dir = context.getFilesDir().getAbsolutePath() + rootPath;//lib和cache目录必须在/data/data/包名 的目录下！
         String libPath = str_lib_cache_dir + File.separator + "lib/";
         File file = new File(libPath);
@@ -302,12 +307,6 @@ public class PatchUtil {
             file.mkdirs();
         }
         copyApkLib(path, libPath);
-        if (resIsUpdate) {
-            toResApk(context, path);
-            ResPatch.setIsEnable(context, true);
-        } else {
-            ResPatch.setIsEnable(context, false);
-        }
         deleteTempFile(context);
     }
 
@@ -319,9 +318,7 @@ public class PatchUtil {
         }
     }
 
-    private void toResApk(Context context, String path) throws IOException {
-        ResApk.toResApk(context, path);
-    }
+
 
     /**
      * 复制so库
