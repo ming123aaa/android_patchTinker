@@ -16,7 +16,7 @@
 
 ```groovy
 	dependencies {
-	        implementation 'com.github.ming123aaa:android_patchTinker:v1.0.0'
+	        implementation 'com.github.ming123aaa:android_patchTinker:v1.0.3'
 	}
 ```
 ### 初始化
