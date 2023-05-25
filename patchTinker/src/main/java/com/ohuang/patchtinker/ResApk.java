@@ -26,19 +26,32 @@ public class ResApk {
         ZipUtil.upZipByZipIntercept(apkPath, tmpPath + "/baseDex", new ZipUtil.ZipIntercept() {
             @Override
             public boolean isCopy(String fileName) {
-                if (fileName.startsWith("lib/")) {
-                    return false;
+                if (fileName.startsWith("classes") && fileName.endsWith(".dex")) {
+                    return true;
                 }
-                return true;
+
+                if (fileName.startsWith("res/")) {
+                    return true;
+                }
+                if (fileName.equals("resources.arsc")){
+                    return true;
+                }
+                return false;
             }
         });
         ZipUtil.upZipByZipIntercept(patchPath, tmpPath + "/patchDex", new ZipUtil.ZipIntercept() {
             @Override
             public boolean isCopy(String fileName) {
-                if (fileName.startsWith("lib/")) {
-                    return false;
+                if (fileName.startsWith("classes") && fileName.endsWith(".dex")) {
+                    return true;
                 }
-                return true;
+                if (fileName.startsWith("res/")) {
+                    return true;
+                }
+                if (fileName.equals("resources.arsc")){
+                    return true;
+                }
+                return false;
             }
         });
         File patchDex = new File(tmpPath + "/patchDex");
