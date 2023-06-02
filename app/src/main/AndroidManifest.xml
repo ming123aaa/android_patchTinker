@@ -18,6 +18,9 @@
         <activity
             android:name=".TestActivity"
             android:exported="false" />
+        <meta-data
+            android:name="PatchTinker_WhiteProcess"
+            android:value=":phoenix"/>
 
         <meta-data
             android:name="Application_Name"

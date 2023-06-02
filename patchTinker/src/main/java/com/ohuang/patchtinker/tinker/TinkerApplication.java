@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.ohuang.patchtinker.PatchUtil;
+import com.ohuang.patchtinker.ProcessCheck;
 
 import java.lang.reflect.Constructor;
 
@@ -43,7 +44,9 @@ public abstract class TinkerApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        PatchUtil.getInstance().init(this);
+        if (ProcessCheck.check(base)) {
+            PatchUtil.getInstance().init(this);
+        }
         ensureDelegate();
         applicationLike.onBaseContextAttached(base);
     }

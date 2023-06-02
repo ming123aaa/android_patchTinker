@@ -12,7 +12,9 @@ public class PatchApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        PatchUtil.getInstance().init(this);
+        if (ProcessCheck.check(base)) {
+            PatchUtil.getInstance().init(this);
+        }
         RefInvoke.invokeStaticMethod("com.ohuang.patchtinker.AppReplaceUtil","attachBaseContext"
                 ,new Class[]{Context.class},new Object[]{base});
     }
