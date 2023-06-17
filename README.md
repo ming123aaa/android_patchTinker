@@ -1,5 +1,5 @@
 ### 注意
-
+暂不支持代码和资源的混淆
 1.需要在 gradle.properties添加 android.enableResourceOptimizations=false 避免资源优化导致异常
 2.AndroidManifest.xml 无法热更。
 3.热更新框架本身无法被热更。
@@ -17,11 +17,32 @@ allprojects {
 
 ```groovy
     dependencies {
-    implementation 'com.github.ming123aaa:android_patchTinker:v1.0.5' //请使用最新
+    implementation 'com.github.ming123aaa:android_patchTinker:v1.0.6' //请使用最新
 }
 ```
 
+必须设置一个基准包的版本号,由于AndroidManifest.xml不会热更所以可用于检测基准包版本是否发生变化。
+```xml
+<application>
+  <meta-data
+            android:name="PatchTinker_Version"
+            android:value="1" />
+</application>
+```
+
+通过以下代码获取当前基准包版本。
+```
+  PatchTinker.getInstance().getPatchTinkerVersion(this);
+```
+
+通过以下代码获取补丁包信息
+```
+PatchTinker.getInstance().getPatchInfo()
+```
+
 ### 初始化
+
+
 
 提供了3种初始化的方式
 
@@ -39,8 +60,6 @@ allprojects {
 <meta-data android:name="Application_Name"》设置为自己的application
 PatchApplication初始化热更后会自动替换成自己application
 
-<meta-data
-android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程白名单,白名单的进程不会自动执行热更 (多个进程用","隔开 以":"代表子进程 )
 
 
 
@@ -79,8 +98,7 @@ public class TkApp extends TinkerApplication {
 <application android:name=".TkApp" />
 ```
 
-<meta-data
-android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程白名单,白名单的进程不会自动执行热更 (多个进程用","隔开 以":"代表子进程 )
+
 
 方式3:
 手动调用补丁初始化方式
@@ -97,9 +115,7 @@ public class App extends Application {
 
 调用PatchUtil.getInstance().init(base);方法之前加载的类无法热更新
 
-进程白名单：
-<meta-data
-android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程白名单,白名单的进程不会自动执行热更 (多个进程用","隔开 以":"代表子进程 )
+
 
 ```java
 public class App extends Application {
@@ -115,7 +131,20 @@ public class App extends Application {
 
 ### 加载补丁包:(完成后需要重启才能生效)
 
-PatchUtil.getInstance().loadPatchApk(StartActivity.this, patch_path);
+PatchTinker.getInstance().loadPatchApk(StartActivity.this, patch_path);
+
+### 进程白名单
+
+进程白名单：
+<meta-data
+android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程白名单,白名单的进程不会自动执行热更 (多个进程用","隔开 以":"代表子进程 )
+
+```xml
+
+<application >
+    <meta-data android:name="PatchTinker_WhiteProcess" android:value=":phoenix" />
+</application>
+```
 
 ### 补丁包生成
 

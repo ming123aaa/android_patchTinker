@@ -82,47 +82,14 @@ public class Patch {
     }
 
 
-    public void fn_patch_dex(Context context, String str_ori, String str_obj) {
-        try {
-            if (context == null) {
-                return;
-            }
-            //创建dex文件输出目录
-            File file_obj = new File(str_obj);
-            if (!file_obj.exists()) {
-                file_obj.mkdirs();
-            }
-            //加载
-            PathClassLoader pathLoader = (PathClassLoader) context.getClassLoader();
-            DexClassLoader dexLoader = new DexClassLoader(
-                    str_ori,//来源apk文件路径
-                    str_obj,//存放dex的解压目录（用于jar、zip、apk格式的补丁）并且此路径只能是app的内部路径（data/data/包名/XXX）
-                    null,//加载dex时需要的库的目录
-                    pathLoader// 父类加载器
-            );
-            //合并
-            Object obj_dexPathList = getPathList(dexLoader);
-            Object obj_pathPathList = getPathList(pathLoader);
-            Object obj_leftDexElements = getDexElements(obj_dexPathList);
-            Object obj_rightDexElements = getDexElements(obj_pathPathList);
-            Object dexElements = combineArray(obj_leftDexElements, obj_rightDexElements);
-            //重写给PathList里面的Element[] dexElements;赋值
-            Object pathList = getPathList(pathLoader);//一定要重新获取，不要用pathPathList，会报错
-            setField(pathList, pathList.getClass(), "dexElements", dexElements);
-        } catch (Exception e) {
-            Log.d("xfhsm", "fn_patch_dex-try::" + e.toString());
-        }
-    }
+
 
     //反射得到类加载器中的pathList对象
     private Object getPathList(Object baseDexClassLoader) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         return getField(baseDexClassLoader, Class.forName("dalvik.system.BaseDexClassLoader"), "pathList");
     }
 
-    //反射得到pathList中的dexElements
-    private Object getDexElements(Object pathList) throws NoSuchFieldException, IllegalAccessException {
-        return getField(pathList, pathList.getClass(), "dexElements");
-    }
+
 
     //反射得到对象中的属性值
     private Object getField(Object obj, Class<?> cl, String field) throws NoSuchFieldException, IllegalAccessException {
@@ -131,24 +98,7 @@ public class Patch {
         return localField.get(obj);
     }
 
-    //反射给对象中的属性重新赋值
-    private void setField(Object obj, Class<?> cl, String field, Object value) throws NoSuchFieldException, IllegalAccessException {
-        Field declaredField = cl.getDeclaredField(field);
-        declaredField.setAccessible(true);
-        declaredField.set(obj, value);
-    }
 
-    //对象数组合并
-    private Object combineArray(Object arrayLhs, Object arrayRhs) {
-        Class<?> componentType = arrayLhs.getClass().getComponentType();
-        int i = Array.getLength(arrayLhs);// 得到左数组长度（补丁数组）
-        int j = Array.getLength(arrayRhs);// 得到原dex数组长度
-        int k = i + j;// 得到总数组长度（补丁数组+原dex数组）
-        Object result = Array.newInstance(componentType, k);// 创建一个类型为componentType，长度为k的新数组
-        System.arraycopy(arrayLhs, 0, result, 0, i);
-        System.arraycopy(arrayRhs, 0, result, i, j);
-        return result;
-    }
 
 
 

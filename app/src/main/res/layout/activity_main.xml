@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"/>
     <Button
-        android:id="@+id/sadas"
+        android:id="@+id/a121"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="yyds"
+        android:text="哈哈"
        />
 
 

@@ -15,38 +15,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HotUpdate"
         tools:targetApi="31">
+        <service
+            android:name=".MyIntentService"
+            android:exported="false"></service>
+
         <activity
             android:name=".TestActivity"
             android:exported="false" />
+
         <meta-data
             android:name="PatchTinker_WhiteProcess"
-            android:value=":phoenix"/>
-
+            android:value=":phoenix" />
+        <meta-data
+            android:name="PatchTinker_Version"
+            android:value="444" />
         <meta-data
             android:name="Application_Name"
             android:value="com.ohuang.hotupdate.TestApp" />
+
         <activity
-
-            android:name="com.ohuang.hotupdate.MainActivity"
-            android:theme="@style/Theme.HotUpdate.Mainactivity"
-            android:exported="true" >
-
-        </activity>
-        <activity android:name="com.ohuang.hotupdate.StartActivity"
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.HotUpdate.Mainactivity"></activity>
+        <activity
+            android:name=".StartActivity"
             android:enabled="true"
-            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".processPhoenix.ProcessPhoenix"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:process=":phoenix"
             android:exported="false"
-            />
+            android:process=":phoenix"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

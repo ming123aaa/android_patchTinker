@@ -15,6 +15,7 @@ import com.ohuang.download.DownLoadManager;
 import com.ohuang.download.SimpleDownLoadListener;
 import com.ohuang.download.SimpleDownLoadTask;
 import com.ohuang.hotupdate.processPhoenix.ProcessPhoenix;
+import com.ohuang.patchtinker.PatchTinker;
 import com.ohuang.patchtinker.PatchUtil;
 
 import java.io.File;
@@ -55,11 +56,9 @@ public class StartActivity extends Activity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    PatchUtil.getInstance().loadPatchApk(StartActivity.this, str_patch_apk);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+
+                                PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk);
+
                                 v.post(new Runnable() {
                                     @Override
                                     public void run() {

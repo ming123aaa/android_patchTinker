@@ -10,6 +10,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.ohuang.patchtinker.PatchTinker;
+import com.ohuang.patchtinker.PatchUtil;
+import com.ohuang.patchtinker.util.AndroidXmlUtil;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -19,14 +23,14 @@ public static final String TAG="MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.d(TAG, "onCreate: version="+2);
+        Log.d(TAG, "onCreate: version="+ PatchTinker.getInstance().getPatchInfo());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         int[] a=new int[]{9,5,7,1,0,56,23,11};
 //        OhuangUtil.sort(a);
-        Toast.makeText(this, Arrays.toString(a),Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "嘿嘿",Toast.LENGTH_LONG).show();
 
-
+        PatchTinker.getInstance().getPatchTinkerVersion(this);
 
 
         Log.d(TAG, "onCreate: "+ R.id.tv_main);
