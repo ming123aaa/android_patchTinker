@@ -17,7 +17,7 @@ allprojects {
 
 ```groovy
     dependencies {
-    implementation 'com.github.ming123aaa:android_patchTinker:v1.0.6' //请使用最新
+    implementation 'com.github.ming123aaa:android_patchTinker:v1.0.8' //请使用最新
 }
 ```
 

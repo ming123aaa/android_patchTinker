@@ -1,7 +1,6 @@
 package com.ohuang.patchtinker.util;
 
 
-
 import java.io.*;
 import java.util.Enumeration;
 import java.util.List;
@@ -65,98 +64,64 @@ public class ZipUtil {
         }
     }
 
-    public static void upZipByName(String apkPath, String outPath, String dir) {
-        boolean b = outPath.endsWith("/") || outPath.endsWith("\\");
+
+
+    public static void upZipByZipIntercept(String zipFilePath, String outDirPath, ZipIntercept zipIntercept) {
+        boolean b = outDirPath.endsWith("/") || outDirPath.endsWith("\\");
         if (!b) {
-            outPath = outPath + "/";
+            outDirPath = outDirPath + "/";
         }
+        File rootFile = new File(outDirPath);
+        if (!rootFile.exists()) {
+            rootFile.mkdirs();
+        }
+        int BUFFER = 1024;
+        String name = "";
+        try {
+            BufferedOutputStream dest = null;
+            BufferedInputStream is = null;
+            ZipEntry entry;
+            ZipFile zipfile = new ZipFile(zipFilePath);
 
+            Enumeration dir = zipfile.entries();
+            while (dir.hasMoreElements()) {
+                entry = (ZipEntry) dir.nextElement();
 
-        // 要进行解压缩的zip文件
-        File zipFile = new File(apkPath);
-
-        // 1.创建解压缩目录
-        // 获取zip文件的名称
-        String zipFileName = zipFile.getName();
-
-        // 2.解析读取zip文件
-        try (ZipInputStream in = new ZipInputStream(new FileInputStream(zipFile))) {
-            // 遍历zip文件中的每个子文件
-            ZipEntry zipEntry = null;
-            while ((zipEntry = in.getNextEntry()) != null) {
-                // 获取zip压缩包中的子文件名称
-                String zipEntryFileName = zipEntry.getName();
-
-                if (zipEntryFileName.startsWith(dir) && !zipEntry.isDirectory()) {
-                    String replace = zipEntryFileName.replace(dir, outPath);
-                    // 创建解压缩目录
-                    File targetDir = new File(replace);
-                    if (targetDir.getParentFile() != null) {
-                        targetDir.getParentFile().mkdirs(); // 创建目录
-                    }
-                    // 创建该文件的输出流
-
-                    // 输出流定义在try()块，结束自动清空缓冲区并关闭
-                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(replace))) {
-
-                        // 读取该子文件的字节内容
-                        byte[] buff = new byte[1024];
-                        int len = -1;
-                        while ((len = in.read(buff)) != -1) {
-                            bos.write(buff, 0, len);
-                        }
-                    }
+                if (entry.isDirectory()) {
+                    name = entry.getName();
+                    name = name.substring(0, name.length() - 1);
+                    File fileObject = new File(outDirPath + name);
+                    fileObject.mkdir();
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static void upZipByZipIntercept(String apkPath, String outPath, ZipIntercept zipIntercept) {
-        boolean b = outPath.endsWith("/") || outPath.endsWith("\\");
-        if (!b) {
-            outPath = outPath + "/";
-        }
-
-
-        // 要进行解压缩的zip文件
-        File zipFile = new File(apkPath);
-
-        // 1.创建解压缩目录
-        // 获取zip文件的名称
-        String zipFileName = zipFile.getName();
-
-        // 2.解析读取zip文件
-        try (ZipInputStream in = new ZipInputStream(new FileInputStream(zipFile))) {
-            // 遍历zip文件中的每个子文件
-            ZipEntry zipEntry = null;
-            while ((zipEntry = in.getNextEntry()) != null) {
-                // 获取zip压缩包中的子文件名称
-                String zipEntryFileName = zipEntry.getName();
-
-                if (zipIntercept.isCopy(zipEntryFileName) && !zipEntry.isDirectory()) {
-                    String replace = outPath + zipEntryFileName;
-                    // 创建解压缩目录
-                    File targetDir = new File(replace);
-                    if (targetDir.getParentFile() != null) {
-                        targetDir.getParentFile().mkdirs(); // 创建目录
+            Enumeration e = zipfile.entries();
+            while (e.hasMoreElements()) {
+                entry = (ZipEntry) e.nextElement();
+                if (!zipIntercept.isCopy(entry.getName())){
+                    continue;
+                }
+                if (entry.isDirectory()) {
+                    continue;
+                } else {
+                    is = new BufferedInputStream(zipfile.getInputStream(entry));
+                    int count;
+                    byte[] dataByte = new byte[BUFFER];
+                    File file = new File(outDirPath + entry.getName());
+                    if (file.getParentFile() != null) {
+                        file.getParentFile().mkdirs();
                     }
-                    // 创建该文件的输出流
-
-                    // 输出流定义在try()块，结束自动清空缓冲区并关闭
-                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(replace))) {
-
-                        // 读取该子文件的字节内容
-                        byte[] buff = new byte[1024];
-                        int len = -1;
-                        while ((len = in.read(buff)) != -1) {
-                            bos.write(buff, 0, len);
-                        }
+                    FileOutputStream fos = new FileOutputStream(outDirPath + entry.getName());
+                    dest = new BufferedOutputStream(fos, BUFFER);
+                    while ((count = is.read(dataByte, 0, BUFFER)) != -1) {
+                        dest.write(dataByte, 0, count);
                     }
+                    dest.flush();
+                    dest.close();
+                    is.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
