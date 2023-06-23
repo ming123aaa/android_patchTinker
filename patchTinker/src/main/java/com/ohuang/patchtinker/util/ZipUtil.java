@@ -1,24 +1,18 @@
 package com.ohuang.patchtinker.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
+
+import java.io.*;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 public class ZipUtil {
 
     /**
      * @param apkPath
      * @param outPath
-     * @param dir      dir需要加后缀/ "lib/"
+     * @param dir     dir需要加后缀/ "lib/"
      */
     public static void upZipByDir(String apkPath, String outPath, String dir) {
         boolean b = outPath.endsWith("/") || outPath.endsWith("\\");
@@ -142,7 +136,7 @@ public class ZipUtil {
                 String zipEntryFileName = zipEntry.getName();
 
                 if (zipIntercept.isCopy(zipEntryFileName) && !zipEntry.isDirectory()) {
-                    String replace = outPath+zipEntryFileName;
+                    String replace = outPath + zipEntryFileName;
                     // 创建解压缩目录
                     File targetDir = new File(replace);
                     if (targetDir.getParentFile() != null) {
@@ -236,15 +230,49 @@ public class ZipUtil {
      */
     public static Boolean toZip(String zipFileName, String sourceFileName, boolean KeepDirStructure) {
         Boolean result = true;
-        long start = System.currentTimeMillis();//开始
         ZipOutputStream zos = null;
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(zipFileName);
             zos = new ZipOutputStream(fileOutputStream);
             File sourceFile = new File(sourceFileName);
-            compress(sourceFile, zos, sourceFile.getName(), KeepDirStructure,true);
-            long end = System.currentTimeMillis();//结束
+            compress(sourceFile, zos, sourceFile.getName(), KeepDirStructure, true, new ZipCompressIntercept() {
+                @Override
+                public boolean canCompress(String name) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            result = false;
+            e.printStackTrace();
+        } finally {
+            if (zos != null) {
+                try {
+                    zos.close();
+                } catch (IOException e) {
+                    e.getStackTrace();
+                }
+            }
+        }
+        return result;
+    }
 
+    /**
+     * 压缩成ZIP 方法1
+     *
+     * @param zipFileName      压缩文件夹路径
+     * @param sourceFileName   要压缩的文件路径
+     * @param KeepDirStructure 是否保留原来的目录结构,true:保留目录结构;
+     *                         false:所有文件跑到压缩包根目录下(注意：不保留目录结构可能会出现同名文件,会压缩失败)
+     * @throws RuntimeException 压缩失败会抛出运行时异常
+     */
+    public static Boolean toZip(String zipFileName, String sourceFileName, boolean KeepDirStructure, ZipCompressIntercept zipCompressIntercept) {
+        Boolean result = true;
+        ZipOutputStream zos = null;
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(zipFileName);
+            zos = new ZipOutputStream(fileOutputStream);
+            File sourceFile = new File(sourceFileName);
+            compress(sourceFile, zos, sourceFile.getName(), KeepDirStructure, true, zipCompressIntercept);
         } catch (Exception e) {
             result = false;
             e.printStackTrace();
@@ -268,15 +296,20 @@ public class ZipUtil {
      * @throws RuntimeException 压缩失败会抛出运行时异常
      */
     public static void toZip(String zipFileName, List<File> srcFiles) throws Exception {
-        long start = System.currentTimeMillis();
+
         ZipOutputStream zos = null;
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(zipFileName);
             zos = new ZipOutputStream(fileOutputStream);
             for (File srcFile : srcFiles) {
-                compress(srcFile, zos, srcFile.getName(), true,false);
+                compress(srcFile, zos, srcFile.getName(), true, false, new ZipCompressIntercept() {
+                    @Override
+                    public boolean canCompress(String name) {
+                        return true;
+                    }
+                });
             }
-            long end = System.currentTimeMillis();
+
 
         } catch (Exception e) {
             throw new RuntimeException("zip error from ZipUtils", e);
@@ -303,11 +336,20 @@ public class ZipUtil {
      * @throws Exception
      */
     public static void compress(File sourceFile, ZipOutputStream zos, String name,
-                                boolean KeepDirStructure,boolean isRoot) throws Exception {
+                                boolean KeepDirStructure, boolean isRoot, ZipCompressIntercept zipCompressIntercept) throws Exception {
 
         if (sourceFile.isFile()) {
+
+            ZipEntry zipEntry = new ZipEntry(name);
+            if (!zipCompressIntercept.canCompress(name)){
+                zipEntry.setMethod(ZipEntry.STORED);
+                zipEntry.setCompressedSize(sourceFile.length());
+                zipEntry.setSize(sourceFile.length());
+                zipEntry.setCrc(getCRC32(sourceFile));
+            }
             // 向zip输出流中添加一个zip实体，构造器中name为zip实体的文件的名字
-            zos.putNextEntry(new ZipEntry(name));
+
+            zos.putNextEntry(zipEntry);
             // copy文件到zip输出流中
             int len;
             FileInputStream in = new FileInputStream(sourceFile);
@@ -334,13 +376,13 @@ public class ZipUtil {
                     if (KeepDirStructure) {
                         // 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
                         // 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
-                        if (isRoot){
-                            compress(file, zos, file.getName(), true,false);
-                        }else {
-                            compress(file, zos, name + "/" + file.getName(), true, false);
+                        if (isRoot) {
+                            compress(file, zos, file.getName(), true, false, zipCompressIntercept);
+                        } else {
+                            compress(file, zos, name + "/" + file.getName(), true, false, zipCompressIntercept);
                         }
                     } else {
-                        compress(file, zos, file.getName(), false,false);
+                        compress(file, zos, file.getName(), false, false, zipCompressIntercept);
                     }
 
                 }
@@ -348,7 +390,45 @@ public class ZipUtil {
         }
     }
 
-    public interface ZipIntercept{
+    /**
+     * 获取文件CRC32校验值
+     *
+     * @param
+     * @return
+     */
+    public static long getCRC32(File file) {
+        long crc32Value = 0L;
+        try {
+            CRC32 crc32 = new CRC32();
+            int fileLen = (int) file.length();
+            InputStream in = new FileInputStream(file);
+            //分段进行crc校验
+            int let = 10 * 1024 * 1024;
+            int sum = fileLen / let + 1;
+            for (int i = 0; i < sum; i++) {
+                if (i == sum - 1) {
+                    let = fileLen - (let * (sum - 1));
+                }
+                byte[] b = new byte[let];
+                in.read(b, 0, let);
+                crc32.update(b);
+            }
+            crc32Value = crc32.getValue();
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+        return crc32Value;
+    }
+
+    public interface ZipCompressIntercept {
+        /**
+         * @param name
+         * @return true为默认压缩模式  false为存储模式
+         */
+        boolean canCompress(String name);
+    }
+
+    public interface ZipIntercept {
 
         boolean isCopy(String fileName);
     }

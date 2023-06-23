@@ -26,32 +26,19 @@ public class ResApk {
         ZipUtil.upZipByZipIntercept(apkPath, tmpPath + "/baseDex", new ZipUtil.ZipIntercept() {
             @Override
             public boolean isCopy(String fileName) {
-                if (fileName.startsWith("classes") && fileName.endsWith(".dex")) {
-                    return true;
+                if (fileName.startsWith("lib/") ) {
+                    return false;
                 }
-
-                if (fileName.startsWith("res/")) {
-                    return true;
-                }
-                if (fileName.equals("resources.arsc")){
-                    return true;
-                }
-                return false;
+                return true;
             }
         });
         ZipUtil.upZipByZipIntercept(patchPath, tmpPath + "/patchDex", new ZipUtil.ZipIntercept() {
             @Override
             public boolean isCopy(String fileName) {
-                if (fileName.startsWith("classes") && fileName.endsWith(".dex")) {
-                    return true;
+                if (fileName.startsWith("lib/") ) {
+                    return false;
                 }
-                if (fileName.startsWith("res/")) {
-                    return true;
-                }
-                if (fileName.equals("resources.arsc")){
-                    return true;
-                }
-                return false;
+                return true;
             }
         });
         File patchDex = new File(tmpPath + "/patchDex");
@@ -71,7 +58,15 @@ public class ResApk {
         });
         CopyFileUtil.renamePathAllFile(tmpPath+"/baseDex"
                 , tmpPath + "/patchDex", "", false);
-        ZipUtil.toZip(outDexPath, tmpPath + "/patchDex", true);
+        ZipUtil.toZip(outDexPath, tmpPath + "/patchDex", true, new ZipUtil.ZipCompressIntercept() {
+            @Override
+            public boolean canCompress(String name) {
+                if (name.startsWith("res/raw/") || name.startsWith("assets/")) {
+                    return false;
+                }
+                return true;
+            }
+        });
 
     }
 
