@@ -11,20 +11,10 @@ public class ResPatch {
 
 
      static void getResPatch(Context context, String str_ori) {
-        if (!isIsEnable(context)){
-            return;
-        }
         tinkerResPatch(context, str_ori);
 
     }
 
-     static boolean isIsEnable(Context context) {
-        return (boolean) OHKVUtil.getInstance(PatchUtil.SP_PatchUtil).get(context,"resEnable",false);
-    }
-
-     static void setIsEnable(Context context,boolean isEnable) {
-         OHKVUtil.getInstance(PatchUtil.SP_PatchUtil).put(context,"resEnable",isEnable);
-    }
 
     /**
      * tinker资源热更新方案
