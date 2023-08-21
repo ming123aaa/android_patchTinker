@@ -155,3 +155,20 @@ android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程�
 res、assets、lib等差分包生成:新老apk解压后 运行[生成差分包文件.bat](tool/生成差分文件.bat)
 dex差分包:将新老apk的dex转smali后、运行[生成差分包文件.bat](tool/生成差分文件.bat) 在重新打成dex
 最后将dex和资源压缩成zip格式~~
+
+### 关于混淆
+
+混淆配置
+```
+-keep class com.ohuang.patchtinker.**{*;}
+```
+
+每次打完包记得保存 mapping.txt 文件用于下次打补丁包配置
+
+配置mapping.txt 仅打补丁包的时候配置
+在proguard-rules.pro文件上添加以下配置
+```
+#改成你的mapping.txt路径
+-applymapping "D:\Users\ali213\AndroidStudioProjects\MyApplication2\app\mapping.txt" 
+
+```
