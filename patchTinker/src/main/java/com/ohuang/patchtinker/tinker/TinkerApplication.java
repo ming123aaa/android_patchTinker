@@ -136,5 +136,7 @@ public abstract class TinkerApplication extends Application {
         return base;
     }
 
-
+    public ApplicationLike getApplicationLike() {
+        return applicationLike;
+    }
 }
