@@ -131,7 +131,11 @@ class AndroidNClassLoader extends PathClassLoader {
                 || (applicationClassName != null && applicationClassName.equals(name))) {
             return originClassLoader.loadClass(name);
         }
-        return super.findClass(name);
+        try {
+            return super.findClass(name);
+        }catch (NoClassDefFoundError noClassDefFoundError){
+            throw new ClassNotFoundException("findClass("+name+") NoClassDefFoundError:"+noClassDefFoundError.getMessage());
+        }
     }
 
     @Override
