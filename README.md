@@ -146,6 +146,16 @@ android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程�
 </application>
 ```
 
+### 类白名单
+
+会根据startWith匹配类名,匹配到的类不进行热更。(配置多个类用,隔开 )
+```xml
+
+<application >
+    <meta-data android:name="PatchTinker_WhiteClassStartWith" android:value="com.aaa.bbb,com.tt.aaa" />
+</application>
+```
+
 ### 补丁包生成
 
 最新方式:

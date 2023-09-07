@@ -5,9 +5,12 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 
+import com.ohuang.patchtinker.WhiteClassUtil;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import dalvik.system.DexFile;
@@ -23,11 +26,14 @@ class AndroidNClassLoader extends PathClassLoader {
     private final PathClassLoader originClassLoader;
     private String applicationClassName;
 
+    private List<String> whiteClassStartWith;//白名单class 开头包名
+
     private AndroidNClassLoader(String dexPath, PathClassLoader parent, Application application) {
         super(dexPath, parent.getParent());
         originClassLoader = parent;
+        whiteClassStartWith= WhiteClassUtil.getWhiteClassStartWith(application);
         String name = application.getClass().getName();
-        if (name != null && !name.equals("android.app.Application")) {
+        if (!name.equals("android.app.Application")) {
             applicationClassName = name;
         }
     }
@@ -128,20 +134,21 @@ class AndroidNClassLoader extends PathClassLoader {
         // loader class use default pathClassloader to load
         if ((name != null
                 && name.startsWith("com.ohuang.patchtinker"))
-                || (applicationClassName != null && applicationClassName.equals(name))) {
+                || (applicationClassName != null && applicationClassName.equals(name))||match(name)) {
             return originClassLoader.loadClass(name);
         }
         Class<?> clazz;
-        try {
-            clazz = super.findClass(name);
-        } catch (Exception e) {
-            if (e instanceof ClassNotFoundException) {
-                throw e;
-            } else {
-                throw new ClassNotFoundException("findClass(" + name + ") NoClassDefFoundError:" + e.getMessage());
+        clazz = super.findClass(name);
+        return clazz;
+    }
+
+    public boolean match(String name){
+        for (int i = 0; i < whiteClassStartWith.size(); i++) {
+            if (name.startsWith(whiteClassStartWith.get(i))){
+                return true;
             }
         }
-        return clazz;
+        return false;
     }
 
     @Override
