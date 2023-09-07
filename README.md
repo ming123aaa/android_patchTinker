@@ -17,7 +17,7 @@ allprojects {
 
 ```groovy
     dependencies {
-    implementation 'com.github.ming123aaa:android_patchTinker:1.1.0' //请使用最新
+    implementation 'com.github.ming123aaa:android_patchTinker:1.1.3' //请使用最新
 }
 ```
 
@@ -85,6 +85,7 @@ public class AppImpl extends ApplicationLike {
 
 ```java
 public class TkApp extends TinkerApplication {
+    //记得防止类名被混淆
     @Override
     public String getApplicationLikeClassName() {
         return "com.ohuang.hotupdate.AppImpl";
@@ -149,6 +150,7 @@ android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程�
 ### 类白名单
 
 会根据startWith匹配类名,匹配到的类不进行热更。(配置多个类用,隔开 )
+记得防止类名被混淆
 ```xml
 
 <application >
