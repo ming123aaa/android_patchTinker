@@ -148,7 +148,7 @@ android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程�
 ```
 
 ### 类白名单
-
+android sdk 24及以上版本支持
 可根据startWith、equals来匹配类名,匹配到的类不进行热更。(配置多个类用,隔开 )
 记得防止类名被混淆
 ```xml
@@ -158,6 +158,15 @@ android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程�
     <meta-data android:name="PatchTinker_WhiteClassEquals" android:value="com.aaa.bbb,com.tt.aaa" />
 </application>
 ```
+
+### 保护模式
+保护模式不会替换classloader,主要用于加固环境,默认false. (设置后会导致类白名单功能失效)  
+```xml
+<application >
+<meta-data android:name="PatchTinker_isProtect" android:value="true" />
+</application>
+```
+
 
 ### 补丁包生成
 

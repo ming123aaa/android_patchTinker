@@ -142,7 +142,11 @@ public class PatchUtil {
 
         if (f.exists()) {
             patch = new Patch();
-            TinkerPatchUtil.loadDexPatch(base, dex_apk, root);  //dex热更
+            if (ProtectModeUtil.isProtect(base)){ //保护模式
+                patch.fn_patch_dex(base,dex_apk,root+"/adpatchcache");
+            }else {
+                TinkerPatchUtil.loadDexPatch(base, dex_apk, root);  //dex热更
+            }
             libUpdate(base, root);
             if (resEnable) {
                 ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + dexPath);  //资源热更新
@@ -157,7 +161,11 @@ public class PatchUtil {
         String root = base.getFilesDir().getAbsolutePath() + rootPath2;//lib和cache目录必须在/data/data/包名 的目录下！
         if (f.exists()) {
             patch = new Patch();
-            TinkerPatchUtil.loadDexPatch(base, dex_apk, root); //dex代码热更新
+            if (ProtectModeUtil.isProtect(base)){ //保护模式
+                patch.fn_patch_dex(base,dex_apk,root+"/adpatchcache");
+            }else {
+                TinkerPatchUtil.loadDexPatch(base, dex_apk, root); //dex代码热更新
+            }
             libUpdate(base, root);//lib热更
             if (resEnable) {
                 ResPatch.getResPatch(base, base.getFilesDir().getAbsolutePath() + dexPath2);  //资源热更新
