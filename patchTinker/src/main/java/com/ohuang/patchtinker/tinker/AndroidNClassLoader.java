@@ -26,12 +26,14 @@ class AndroidNClassLoader extends PathClassLoader {
     private final PathClassLoader originClassLoader;
     private String applicationClassName;
 
-    private List<String> whiteClassStartWith;//白名单class 开头包名
+    private List<String> whiteClassStartWith;//白名单class startWith
+    private List<String> whiteClassEquals;//白名单class equals
 
     private AndroidNClassLoader(String dexPath, PathClassLoader parent, Application application) {
         super(dexPath, parent.getParent());
         originClassLoader = parent;
         whiteClassStartWith= WhiteClassUtil.getWhiteClassStartWith(application);
+        whiteClassEquals= WhiteClassUtil.getWhiteClassEquals(application);
         String name = application.getClass().getName();
         if (!name.equals("android.app.Application")) {
             applicationClassName = name;
@@ -145,6 +147,11 @@ class AndroidNClassLoader extends PathClassLoader {
     public boolean match(String name){
         for (int i = 0; i < whiteClassStartWith.size(); i++) {
             if (name.startsWith(whiteClassStartWith.get(i))){
+                return true;
+            }
+        }
+        for (int i = 0; i < whiteClassEquals.size(); i++) {
+            if (name.equals(whiteClassEquals.get(i))){
                 return true;
             }
         }
