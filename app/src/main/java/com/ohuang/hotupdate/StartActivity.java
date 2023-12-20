@@ -29,7 +29,7 @@ public class StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Toast.makeText(this, "大水杯", Toast.LENGTH_LONG).show();
+
 
         setContentView(getResources().getIdentifier("activity_start", "layout", this.getPackageName()));
         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {

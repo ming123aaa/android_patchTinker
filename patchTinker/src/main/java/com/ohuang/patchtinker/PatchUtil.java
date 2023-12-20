@@ -132,12 +132,33 @@ public class PatchUtil {
         }
     }
 
+    /**
+     * android 14以后 动态加载apk需要设置成只读
+     * @param file
+     */
+    private void setPatchReadOnly(File file){
+        if (Build.VERSION.SDK_INT>=34){
+            if (file.exists()) {
+                file.setReadOnly();
+            }
+        }
+    }
+
+    private void setPatchWriteAble(File file){
+        if (Build.VERSION.SDK_INT>=34){
+            if (file.exists()) {
+                file.setWritable(true);
+            }
+        }
+    }
+
+
 
     private void initPatch(Application base,boolean resEnable) {
         String dex_apk = base.getFilesDir().getAbsolutePath() + dexPath;
         Log.d(TAG, "initPatch: dex_pak=" + dex_apk);
         File f = new File(dex_apk);
-
+        setPatchReadOnly(f);//设置只读
         String root = base.getFilesDir().getAbsolutePath() + rootPath;//lib和cache目录必须在/data/data/包名 的目录下！
 
         if (f.exists()) {
@@ -158,6 +179,7 @@ public class PatchUtil {
         String dex_apk = base.getFilesDir().getAbsolutePath() + dexPath2;
         Log.d(TAG, "initPatch: dex_pak=" + dex_apk);
         File f = new File(dex_apk);
+        setPatchReadOnly(f);//设置只读
         String root = base.getFilesDir().getAbsolutePath() + rootPath2;//lib和cache目录必须在/data/data/包名 的目录下！
         if (f.exists()) {
             patch = new Patch();
@@ -264,7 +286,6 @@ public class PatchUtil {
         }
         boolean isLoader = (boolean) OHKVUtil.getInstance(SP_PatchUtil).get(context, SP_KEY_isLoader, false);
         if (isLoader) {
-
             boolean usePath2 = (boolean) OHKVUtil.getInstance(SP_PatchUtil).get(context, SP_KEY_LoaderP2, false);
             if (usePath2) { //如果现在加载的是补丁包在path2  新包就更新到path1
                 deletePatch(context);
@@ -306,6 +327,7 @@ public class PatchUtil {
         File oldRoot = new File(context.getFilesDir().getAbsolutePath() + rootPath);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_version, "");
         if (oldRoot.exists()) {
+            setPatchWriteAble(new File(context.getFilesDir().getAbsolutePath() +dexPath2));
             FileUtils.delete(oldRoot);
         }
         return oldRoot;
@@ -315,6 +337,7 @@ public class PatchUtil {
         File oldRoot = new File(context.getFilesDir().getAbsolutePath() + rootPath2);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_P2Version, "");
         if (oldRoot.exists()) {
+            setPatchWriteAble(new File(context.getFilesDir().getAbsolutePath() +dexPath2));
             FileUtils.delete(oldRoot);
         }
         return oldRoot;
@@ -330,14 +353,8 @@ public class PatchUtil {
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_LoaderP2, false);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_version, "");
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_P2Version, "");
-        File rootFile = new File(context.getFilesDir().getAbsolutePath() + rootPath);
-        if (rootFile.exists()) {
-            FileUtils.delete(rootFile);
-        }
-        File oldRoot = new File(context.getFilesDir().getAbsolutePath() + rootPath2);
-        if (oldRoot.exists()) {
-            FileUtils.delete(oldRoot);
-        }
+        deletePatch(context);
+        deletePatch2(context);
 
     }
 

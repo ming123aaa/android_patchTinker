@@ -32,8 +32,8 @@ class AndroidNClassLoader extends PathClassLoader {
     private AndroidNClassLoader(String dexPath, PathClassLoader parent, Application application) {
         super(dexPath, parent.getParent());
         originClassLoader = parent;
-        whiteClassStartWith= WhiteClassUtil.getWhiteClassStartWith(application);
-        whiteClassEquals= WhiteClassUtil.getWhiteClassEquals(application);
+        whiteClassStartWith = WhiteClassUtil.getWhiteClassStartWith(application);
+        whiteClassEquals = WhiteClassUtil.getWhiteClassEquals(application);
         String name = application.getClass().getName();
         if (!name.equals("android.app.Application")) {
             applicationClassName = name;
@@ -136,22 +136,27 @@ class AndroidNClassLoader extends PathClassLoader {
         // loader class use default pathClassloader to load
         if ((name != null
                 && name.startsWith("com.ohuang.patchtinker"))
-                || (applicationClassName != null && applicationClassName.equals(name))||match(name)) {
+                || (applicationClassName != null && applicationClassName.equals(name)) || match(name)) {
             return originClassLoader.loadClass(name);
         }
         Class<?> clazz;
-        clazz = super.findClass(name);
+        try {
+            clazz = super.findClass(name);
+        } catch (Throwable e) {
+            clazz = originClassLoader.loadClass(name);
+        }
         return clazz;
+
     }
 
-    public boolean match(String name){
+    public boolean match(String name) {
         for (int i = 0; i < whiteClassStartWith.size(); i++) {
-            if (name.startsWith(whiteClassStartWith.get(i))){
+            if (name.startsWith(whiteClassStartWith.get(i))) {
                 return true;
             }
         }
         for (int i = 0; i < whiteClassEquals.size(); i++) {
-            if (name.equals(whiteClassEquals.get(i))){
+            if (name.equals(whiteClassEquals.get(i))) {
                 return true;
             }
         }

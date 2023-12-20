@@ -28,7 +28,7 @@ public static final String TAG="MainActivity";
         setContentView(R.layout.activity_main);
         int[] a=new int[]{9,5,7,1,0,56,23,11};
 //        OhuangUtil.sort(a);
-        Toast.makeText(this, "嘿嘿",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "猫猫",Toast.LENGTH_LONG).show();
 
         PatchTinker.getInstance().getPatchTinkerVersion(this);
 
