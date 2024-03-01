@@ -30,7 +30,7 @@ public abstract class TinkerApplication extends Application {
             // Use reflection to create the delegate so it doesn't need to go into the primary dex.
             String applicationLikeClassName = getApplicationLikeClassName();
             if (TextUtils.isEmpty(applicationLikeClassName)){
-                applicationLikeClassName="com.ohuang.patchuptate.tinker.EmptyApplicationLike";
+                applicationLikeClassName="com.ohuang.patchtinker.tinker.EmptyApplicationLike";
             }
             // And we can also patch it
             Class<?> delegateClass = Class.forName(applicationLikeClassName, false, getClassLoader());
