@@ -20,4 +20,4 @@ include ':app'
 include ':patchTinker'
 
 
-
+include ':test'

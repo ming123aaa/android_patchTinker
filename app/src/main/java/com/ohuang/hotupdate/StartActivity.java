@@ -35,6 +35,7 @@ public class StartActivity extends Activity {
         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 startActivity(new Intent(StartActivity.this, MainActivity.class));
             }
         });

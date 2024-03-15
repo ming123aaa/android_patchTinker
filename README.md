@@ -161,6 +161,7 @@ android sdk 24及以上版本支持
 
 ### 保护模式
 保护模式不会替换classloader,主要用于加固环境,默认false. (设置后会导致类白名单功能失效)  
+主要用于加固环境下
 ```xml
 <application >
 <meta-data android:name="PatchTinker_isProtect" android:value="true" />
