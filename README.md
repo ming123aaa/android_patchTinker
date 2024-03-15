@@ -17,7 +17,7 @@ allprojects {
 
 ```groovy
     dependencies {
-    implementation 'com.github.ming123aaa:android_patchTinker:1.1.6' //请使用最新
+    implementation 'com.github.ming123aaa:android_patchTinker:1.1.8' //请使用最新
 }
 ```
 
@@ -173,6 +173,10 @@ android sdk 24及以上版本支持
 
 最新方式:
 运行[生成补丁包.bat](tool/生成补丁包.bat)
+
+如果不需要资源热更:
+运行[生成补丁包(无资源).bat](tool/生成补丁包(无资源).bat)
+
 
 ~~之前的打包方式:
 res、assets、lib等差分包生成:新老apk解压后 运行[生成差分包文件.bat](tool/生成差分文件.bat)
