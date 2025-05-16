@@ -15,16 +15,17 @@ public static final String TAG="TestActivity";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        findViewById(R.id.iv_icon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(TestActivity.this,"testActivity",Toast.LENGTH_LONG).show();
-            }
-        });
 
         TextView viewById = findViewById(R.id.tv_test);
         Log.d(TAG, "onCreate: tv_test="+viewById+"  id="+R.id.tv_test);
-        viewById.setText("哈哈哈啊哈哈");
+        viewById.setText("哈几米");
+        findViewById(R.id.iv_icon2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(TestActivity.this, "ddd",Toast.LENGTH_LONG).show();
+            }
+        });
+
 //        ImageView imageView = findViewById(R.id.iv_icon2);
 //        Log.d(TAG, "onCreate: iv_icon2="+imageView+"  id="+R.id.iv_icon2);
     }

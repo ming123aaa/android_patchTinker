@@ -20,14 +20,22 @@ import dalvik.system.PathClassLoader;
 public class SystemClassLoaderAdder {
     public static final String TAG = "SystemClassLoaderAdder";
 
-    public static void installDexes(Application application, PathClassLoader loader, File dexOptDir, List<File> files)
+    /**
+     * @param application
+     * @param loader
+     * @param dexOptDir
+     * @param files
+     * @param isProtect   加固传ture
+     * @throws Throwable
+     */
+    public static void installDexes(Application application, PathClassLoader loader, File dexOptDir, List<File> files, boolean isProtect)
             throws Throwable {
         Log.i(TAG, "installDexes dexOptDir: " + dexOptDir.getAbsolutePath() + ", dex size:" + files.size());
 
         if (!files.isEmpty()) {
 
             ClassLoader classLoader = loader;
-            if (Build.VERSION.SDK_INT >= 24) {
+            if (Build.VERSION.SDK_INT >= 24 && !isProtect) {
                 classLoader = AndroidNClassLoader.inject(loader, application);
             }
             //because in dalvik, if inner class is not the same classloader with it wrapper class.
@@ -42,7 +50,6 @@ public class SystemClassLoaderAdder {
                 V4.install(classLoader, files, dexOptDir);
             }
             //install done
-
 
 
         }

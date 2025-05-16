@@ -28,10 +28,15 @@ public static final String TAG="MainActivity";
         setContentView(R.layout.activity_main);
         int[] a=new int[]{9,5,7,1,0,56,23,11};
 //        OhuangUtil.sort(a);
-        Toast.makeText(this, "猫猫",Toast.LENGTH_LONG).show();
+
 
         PatchTinker.getInstance().getPatchTinkerVersion(this);
-
+        findViewById(R.id.a121).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "狗别叫",Toast.LENGTH_LONG).show();
+            }
+        });
 
         Log.d(TAG, "onCreate: "+ R.id.tv_main);
         TextView viewById = findViewById(R.id.tv_main);
@@ -40,6 +45,7 @@ public static final String TAG="MainActivity";
             public void onClick(View v) {
                 try {
                     startActivity(new Intent(MainActivity.this,Class.forName("com.ohuang.hotupdate.TestActivity")));
+                    Toast.makeText(MainActivity.this, "gogogo",Toast.LENGTH_LONG).show();
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }

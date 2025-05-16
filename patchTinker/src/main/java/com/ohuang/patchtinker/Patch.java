@@ -17,6 +17,7 @@ import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
 
 public class Patch {
+    private static final String TAG = "Patch";
     public void fn_patch_lib(Context context, String str_dir) {
         try {
             if (context == null) {
@@ -105,6 +106,9 @@ public class Patch {
             Object obj_pathPathList = getPathList(pathLoader);
             Object obj_leftDexElements = getDexElements(obj_dexPathList);
             Object obj_rightDexElements = getDexElements(obj_pathPathList);
+            Log.d(TAG, "fn_patch_dex: obj_leftDexElements"+Arrays.toString((Object[]) obj_leftDexElements));
+            Log.d(TAG, "fn_patch_dex: obj_rightDexElements="+Arrays.toString((Object[]) obj_rightDexElements));
+            //todo dexElements合并
             Object dexElements = combineArray(obj_leftDexElements, obj_rightDexElements);
             //重写给PathList里面的Element[] dexElements;赋值
             Object pathList = getPathList(pathLoader);//一定要重新获取，不要用pathPathList，会报错

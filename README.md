@@ -57,7 +57,7 @@ PatchTinker.getInstance().getPatchInfo()
 ```
 
 将application的name设置为com.ohuang.patchtinker.PatchApplication
-<meta-data android:name="Application_Name"》设置为自己的application
+<meta-data android:name="Application_Name">设置为自己的application
 PatchApplication初始化热更后会自动替换成自己application
 
 

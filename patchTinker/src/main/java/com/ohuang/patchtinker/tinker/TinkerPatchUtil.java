@@ -15,8 +15,9 @@ public class TinkerPatchUtil {
      * @param context
      * @param apkPath
      * @param rootPath
+     * @param isProtect 加固传ture
      */
-    public static void loadDexPatch(Application context, String apkPath, String rootPath) {
+    public static void loadDexPatch(Application context, String apkPath, String rootPath,  boolean isProtect) {
         File file = new File(apkPath);
 
         if (file.exists()) {
@@ -26,7 +27,7 @@ public class TinkerPatchUtil {
             String optimizedPath = optimizedPathFor(file, new File(optimizeDexDirectory));
             PathClassLoader classLoader = (PathClassLoader) context.getClassLoader();
             try {
-                SystemClassLoaderAdder.installDexes(context, classLoader, new File(optimizedPath),data);
+                SystemClassLoaderAdder.installDexes(context, classLoader, new File(optimizedPath),data,isProtect);
             } catch (Throwable e) {
                 e.printStackTrace();
             }
