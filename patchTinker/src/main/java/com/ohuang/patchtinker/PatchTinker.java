@@ -39,17 +39,23 @@ public class PatchTinker {
         return PatchUtil.getInstance().getPatchInfo();
     }
 
-    public void installPatch(Context context, String patchFilePath) {
-        installPatch(context, patchFilePath, true);
+    /***
+     *
+     * @param context
+     * @param patchFilePath
+     * @param isV2Patch  是否是V2版本的补丁
+     */
+    public void installPatch(Context context, String patchFilePath,boolean isV2Patch) {
+        installPatch(context, patchFilePath, true, isV2Patch);
     }
 
-    public void installPatch(Context context, String patchFilePath, boolean isUpdateRes) {
+    public void installPatch(Context context, String patchFilePath, boolean isUpdateRes,boolean isV2Patch) {
         String metaData = AndroidXmlUtil.getMetaData(context, Meta_KEY_version);
         if (TextUtils.isEmpty(metaData)) {
             throw new RuntimeException("需要设置一个name为PatchTinker_Version的<meta-data>数据  用于基准包版本判断");
         }
         try {
-            PatchUtil.getInstance().loadPatchApk(context, patchFilePath, isUpdateRes);
+            PatchUtil.getInstance().loadPatchApk(context, patchFilePath, isUpdateRes,isV2Patch);
         } catch (IOException e) {
             e.printStackTrace();
         }

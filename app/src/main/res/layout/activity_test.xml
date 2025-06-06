@@ -15,11 +15,11 @@
         android:text="123456"
         android:textColor="#fff" />
 
-    <!--    <View-->
-    <!--        android:id="@+id/iv_a"-->
-    <!--        android:layout_width="50dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:background="#f00" />-->
+<!--        <View-->
+<!--            android:id="@+id/iv_a"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:background="#f00" />-->
 
 
 

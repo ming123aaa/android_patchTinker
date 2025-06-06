@@ -21,6 +21,8 @@ public class PatchInfo {
      */
     public boolean isUpdate = false;
 
+    public boolean isV2Patch = false;
+
     public State state = State.NoLoadPatch;
 
     public String msg = "";

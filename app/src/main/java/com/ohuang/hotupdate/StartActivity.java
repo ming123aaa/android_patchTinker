@@ -58,7 +58,7 @@ public class StartActivity extends Activity {
                             @Override
                             public void run() {
 
-                                PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk);
+                                PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk,false);
 
                                 v.post(new Runnable() {
                                     @Override
@@ -87,7 +87,43 @@ public class StartActivity extends Activity {
         findViewById(R.id.btn_restart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                restartApp(StartActivity.this);
+                EditText viewById = findViewById(R.id.edit_url);
+
+                DownloadUtil.download(StartActivity.this, viewById.getText().toString(), new SimpleDownLoadListener() {
+                    @Override
+                    public void onError(SimpleDownLoadTask downloadTask, Exception e) {
+                        Toast.makeText(StartActivity.this, "下载失败", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onSuccess(SimpleDownLoadTask downloadTask) {
+                        String str_patch_apk = downloadTask.getFile().getAbsolutePath();
+                        Toast.makeText(StartActivity.this, "开始加载补丁", Toast.LENGTH_LONG).show();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk,true);
+
+                                v.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(StartActivity.this, "加载完成", Toast.LENGTH_LONG).show();
+
+                                    }
+                                });
+                                new File(str_patch_apk).delete();
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ProcessPhoenix.triggerRebirth(StartActivity.this);
+                                    }
+                                }, 1000);
+                            }
+                        }).start();
+
+                    }
+                });
             }
         });
 

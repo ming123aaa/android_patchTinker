@@ -11,7 +11,7 @@
         android:id="@+id/tv_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="汪汪队"
+        android:text=""
         android:textColor="#0f0"
        />
     <ImageView
@@ -23,7 +23,7 @@
         android:id="@+id/a121"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="汪汪队"
+        android:text="猪猪侠"
        />
 
 

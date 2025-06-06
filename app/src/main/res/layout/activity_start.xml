@@ -34,6 +34,6 @@
         android:id="@+id/btn_restart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="重启测试"
+        android:text="v2热更新"
         />
 </LinearLayout>

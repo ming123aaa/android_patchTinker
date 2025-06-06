@@ -1,10 +1,12 @@
 推荐使用最新的V2版本的[android_patchTinkerV2](https://github.com/ming123aaa/android_patchTinkerV2),优化了补丁的大小和补丁加载的时间
+本项目在2.0.0以上的版本也支持V2版本补丁方式
 ### 注意
 暂不支持代码和资源的混淆
 1.需要在 gradle.properties添加 android.enableResourceOptimizations=false 避免资源优化导致异常
 2.AndroidManifest.xml 无法热更。
 3.热更新框架本身无法被热更。
 4.热更后需要重启应用才能生效。
+5.v2版本的补丁无法修改已存在的assets的资源(若要修改，只需修改一下文件名)
 
 ### 引用
 
@@ -18,7 +20,7 @@ allprojects {
 
 ```groovy
     dependencies {
-    implementation 'com.github.ming123aaa:android_patchTinker:1.1.8' //请使用最新
+    implementation 'com.github.ming123aaa:android_patchTinker:2.0.0' //请使用最新
 }
 ```
 
@@ -105,26 +107,15 @@ public class TkApp extends TinkerApplication {
 方式3:
 手动调用补丁初始化方式
 
-```java
-public class App extends Application {
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        PatchUtil.getInstance().init(this);
-    }
-}
-```
 
 调用PatchUtil.getInstance().init(base);方法之前加载的类无法热更新
 
-
-
 ```java
 public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        if (ProcessCheck.check(base)) {
+        if (ProcessCheck.check(base)) {//进程白名单检查
             PatchUtil.getInstance().init(this);
         }
     }
@@ -132,8 +123,13 @@ public class App extends Application {
 ```
 
 ### 加载补丁包:(完成后需要重启才能生效)
+patch_path:补丁包路径
+isV2Patch:是否是V2补丁包
 
-PatchTinker.getInstance().loadPatchApk(StartActivity.this, patch_path);
+PatchTinker.getInstance().installPatch(context, patch_path,isV2Patch);
+
+
+
 
 ### 进程白名单
 
@@ -170,7 +166,7 @@ android sdk 24及以上版本支持
 ```
 
 
-### 补丁包生成
+### 补丁包生成  V1方式
 
 最新方式:
 运行[生成补丁包.bat](tool/生成补丁包.bat)
@@ -183,6 +179,16 @@ android sdk 24及以上版本支持
 res、assets、lib等差分包生成:新老apk解压后 运行[生成差分包文件.bat](tool/生成差分文件.bat)
 dex差分包:将新老apk的dex转smali后、运行[生成差分包文件.bat](tool/生成差分文件.bat) 在重新打成dex
 最后将dex和资源压缩成zip格式~~
+
+
+### 补丁包生成  V2方式(需要2.0.0的版本以上才支持)
+使用阿里的SophixPatchTool打包,需要取消检查初始化选项，需要取消检查初始化选项，需要取消检查初始化选项。
+补丁包生成需要使用打补丁工具SophixPatchTool，如还未下载打补丁工具，请前往下载Android打包工具。
+打包工具下载地址如下：
+[Mac版本打包工具下载](https://ams-hotfix-repo.oss-cn-shanghai.aliyuncs.com/SophixPatchTool_macos.zip?spm=a2c4g.11186623.0.0.58d32cd3lkmCPs&file=SophixPatchTool_macos.zip)
+[Windows版本打包工具下载](https://ams-hotfix-repo.oss-cn-shanghai.aliyuncs.com/SophixPatchTool_windows.zip?spm=a2c4g.11186623.0.0.58d32cd3lkmCPs&file=SophixPatchTool_windows.zip)
+[Linux版本打包工具地址](https://ams-hotfix-repo.oss-cn-shanghai.aliyuncs.com/SophixPatchTool_linux.zip?spm=a2c4g.11186623.0.0.58d32cd3lkmCPs&file=SophixPatchTool_linux.zip)
+如果工具打包很久没有完成的话，可能是apk的问题，可以尝试把apk解压然后再压缩成zip包。
 
 ### 关于混淆
 
