@@ -1,5 +1,5 @@
-推荐使用最新的V2版本的[android_patchTinkerV2](https://github.com/ming123aaa/android_patchTinkerV2),优化了补丁的大小和补丁加载的时间
-本项目在2.0.0以上的版本也支持V2版本补丁方式
+推荐使用最新的V2版本的,优化了补丁的大小和补丁加载的时间
+本项目在2.0.0以上的版本也支持V2版本补丁方式。
 ### 注意
 暂不支持代码和资源的混淆
 1.需要在 gradle.properties添加 android.enableResourceOptimizations=false 避免资源优化导致异常

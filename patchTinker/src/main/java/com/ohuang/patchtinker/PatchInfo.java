@@ -45,6 +45,8 @@ public class PatchInfo {
         patchInfo.isUpdate = isUpdate;
         patchInfo.msg = msg;
         patchInfo.state = state;
+        patchInfo.patchTinkerVersionForInstall = patchTinkerVersionForInstall;
+        patchInfo.isV2Patch = isV2Patch;
         patchInfo.patchTinkerVersion = patchTinkerVersion;
         return patchInfo;
     }
