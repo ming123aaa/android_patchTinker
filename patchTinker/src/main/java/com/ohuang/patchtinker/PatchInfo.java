@@ -27,6 +27,10 @@ public class PatchInfo {
 
     public String msg = "";
 
+    /**
+     * 安装时写入的数据
+     */
+    public String installInfo = "";
 
 
 
@@ -48,6 +52,7 @@ public class PatchInfo {
         patchInfo.patchTinkerVersionForInstall = patchTinkerVersionForInstall;
         patchInfo.isV2Patch = isV2Patch;
         patchInfo.patchTinkerVersion = patchTinkerVersion;
+        patchInfo.installInfo = installInfo;
         return patchInfo;
     }
 

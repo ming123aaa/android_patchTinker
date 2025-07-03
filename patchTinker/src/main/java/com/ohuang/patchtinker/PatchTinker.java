@@ -42,23 +42,53 @@ public class PatchTinker {
     /***
      *
      * @param context
-     * @param patchFilePath
+     * @param patchFilePath 补丁包路径
      * @param isV2Patch  是否是V2版本的补丁
      */
     public void installPatch(Context context, String patchFilePath,boolean isV2Patch) {
-        installPatch(context, patchFilePath, true, isV2Patch);
+        installPatch(context, patchFilePath, true, isV2Patch,"");
     }
 
-    public void installPatch(Context context, String patchFilePath, boolean isUpdateRes,boolean isV2Patch) {
+    /**
+     *
+     * @param context
+     * @param patchFilePath 补丁包路径
+     * @param isV2Patch  是否是V2版本的补丁
+     * @param installInfo  补丁包信息, 用于记录补丁包的信息  补丁加载完成后可通过getPatchInfo().installInfo获取
+     */
+    public void installPatch(Context context, String patchFilePath,boolean isV2Patch,String installInfo) {
+        installPatch(context, patchFilePath, true, isV2Patch,installInfo);
+    }
+
+    /**
+     *
+     * @param context
+     * @param patchFilePath 补丁包路径
+     * @param isUpdateRes 资源是否热更
+     * @param isV2Patch 是否是V2版本的补丁
+     */
+
+    public void installPatch(Context context, String patchFilePath, boolean isUpdateRes,boolean isV2Patch){
+        installPatch(context, patchFilePath, isUpdateRes, isV2Patch,"");
+    }
+
+    /**
+     *
+     * @param context
+     * @param patchFilePath 补丁包路径
+     * @param isUpdateRes 资源是否热更
+     * @param isV2Patch 是否是V2版本的补丁
+     * @param installInfo 补丁包信息, 用于记录补丁包的信息  补丁加载完成后可通过getPatchInfo().installInfo获取
+     */
+    public void installPatch(Context context, String patchFilePath, boolean isUpdateRes,boolean isV2Patch,String installInfo) {
         String metaData = AndroidXmlUtil.getMetaData(context, Meta_KEY_version);
         if (TextUtils.isEmpty(metaData)) {
             throw new RuntimeException("需要设置一个name为PatchTinker_Version的<meta-data>数据  用于基准包版本判断");
         }
-        try {
-            PatchUtil.getInstance().loadPatchApk(context, patchFilePath, isUpdateRes,isV2Patch);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (installInfo==null){
+            installInfo="";
         }
+        PatchUtil.getInstance().loadPatchApk(context, patchFilePath, isUpdateRes,isV2Patch,installInfo);
     }
 
     public void uninstallPatch(Context context){

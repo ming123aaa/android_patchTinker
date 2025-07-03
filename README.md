@@ -124,9 +124,10 @@ public class App extends Application {
 
 ### 加载补丁包:(完成后需要重启才能生效)
 patch_path:补丁包路径
+
 isV2Patch:是否是V2补丁包
 
-PatchTinker.getInstance().installPatch(context, patch_path,isV2Patch);
+PatchTinker.getInstance().installPatch(context, patch_path,isV2Patch);//方法是同步的，不要在主线程执行
 
 
 

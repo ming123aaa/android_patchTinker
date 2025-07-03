@@ -37,6 +37,8 @@ public class PatchUtil {
 
     static final String SP_KEY_resEnable = "resEnable";
     static final String SP_KEY_resEnable2 = "resEnable2";
+    static final String SP_KEY_installInfo = "installInfo";
+    static final String SP_KEY_installInfo2 = "installInfo2";
 
     static final String Meta_KEY_version = "PatchTinker_Version";
 
@@ -100,8 +102,10 @@ public class PatchUtil {
     private void checkPatch(Application base) {
         boolean isResEnable = (boolean) OHKVUtil.getInstance(PatchUtil.SP_PatchUtil).get(base, SP_KEY_resEnable, false);
         String pVersion = (String) OHKVUtil.getInstance(SP_PatchUtil).get(base, SP_KEY_version, "");
+        String installInfo = (String) OHKVUtil.getInstance(SP_PatchUtil).get(base, SP_KEY_installInfo, "");
         boolean isUseV2Patch = (boolean) OHKVUtil.getInstance(SP_PatchUtil).get(base, SP_KEY_isV2Patch, false);
         patchInfo.patchTinkerVersionForInstall = pVersion;
+        patchInfo.installInfo = installInfo;
         patchInfo.isV2Patch=isUseV2Patch;
         if (pVersion.equals(patchInfo.patchTinkerVersion)) {
             patchInfo.isUpdate = true;
@@ -121,8 +125,10 @@ public class PatchUtil {
     private void checkPatch2(Application base) {
         boolean isResEnable = (boolean) OHKVUtil.getInstance(PatchUtil.SP_PatchUtil).get(base, SP_KEY_resEnable2, false);
         String pVersion = (String) OHKVUtil.getInstance(SP_PatchUtil).get(base, SP_KEY_P2Version, "");
+        String installInfo2 = (String) OHKVUtil.getInstance(SP_PatchUtil).get(base, SP_KEY_installInfo2, "");
         boolean isUseV2Patch = (boolean) OHKVUtil.getInstance(SP_PatchUtil).get(base, SP_KEY_isV2PatchP2, false);
         patchInfo.patchTinkerVersionForInstall = pVersion;
+        patchInfo.installInfo = installInfo2;
         patchInfo.isV2Patch=isUseV2Patch;
         if (pVersion.equals(patchInfo.patchTinkerVersion)) {
             patchInfo.isUpdate = true;
@@ -267,15 +273,18 @@ public class PatchUtil {
      * @param resIsUpdate 资源热更新是否可用
      * @throws IOException
      */
-    public void loadPatchApk(Context context, String path, boolean resIsUpdate,boolean isV2Patch) throws IOException {
+    public void loadPatchApk(Context context, String path, boolean resIsUpdate,boolean isV2Patch,String installInfo) {
         long l = System.currentTimeMillis();
         String metaData = AndroidXmlUtil.getMetaData(context, Meta_KEY_version);
         if (TextUtils.isEmpty(metaData)) {
             throw new RuntimeException("需要设置一个name为PatchTinker_Version的<meta-data>数据  用于基准包版本判断");
         }
+        if (installInfo== null){
+            installInfo="";
+        }
         File file1 = new File(path);
         if (!file1.exists()) {
-            return;
+            throw new RuntimeException("文件不存在:"+path);
         }
         boolean isLoader = (boolean) OHKVUtil.getInstance(SP_PatchUtil).get(context, SP_KEY_isLoader, false);
         if (isLoader) {
@@ -283,37 +292,39 @@ public class PatchUtil {
             if (usePath2) { //如果现在加载的是补丁包在path2  新包就更新到path1
                 deletePatch(context);
                 updatePatch(context, path, resIsUpdate, context.getFilesDir().getAbsolutePath() + rootPath,isV2Patch);
-                usePatch1(context, metaData, resIsUpdate,isV2Patch);
+                usePatch1(context, metaData, resIsUpdate,isV2Patch,installInfo);
                 deletePatch2(context);
             } else {
                 deletePatch2(context);
                 updatePatch(context, path, resIsUpdate, context.getFilesDir().getAbsolutePath() + rootPath2,isV2Patch);
-                usePatch2(context, metaData, resIsUpdate,isV2Patch);
+                usePatch2(context, metaData, resIsUpdate,isV2Patch,installInfo);
                 deletePatch(context);
             }
         } else {
             unInstallPatchApk(context);
             updatePatch(context, path, resIsUpdate, context.getFilesDir().getAbsolutePath() + rootPath,isV2Patch);
-            usePatch1(context, metaData, resIsUpdate,isV2Patch);
+            usePatch1(context, metaData, resIsUpdate,isV2Patch,installInfo);
         }
 
         Log.d(TAG, "loadPatchApk: 加载补丁耗时:" + (System.currentTimeMillis() - l) + "ms");
     }
 
 
-    private void usePatch1(Context context, String version, boolean resEnable,boolean isV2Patch) {
+    private void usePatch1(Context context, String version, boolean resEnable,boolean isV2Patch,String installInfo) {
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isLoader, true);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_LoaderP2, false);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_version, version);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isV2Patch, isV2Patch);
+        OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_installInfo, installInfo);
         OHKVUtil.getInstance(PatchUtil.SP_PatchUtil).put(context, SP_KEY_resEnable, resEnable);
     }
 
-    private void usePatch2(Context context, String version, boolean resEnable,boolean isV2Patch) {
+    private void usePatch2(Context context, String version, boolean resEnable,boolean isV2Patch,String installInfo) {
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isLoader, true);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_LoaderP2, true);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_P2Version, version);
         OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isV2PatchP2, isV2Patch);
+        OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_installInfo2, installInfo);
         OHKVUtil.getInstance(PatchUtil.SP_PatchUtil).put(context, SP_KEY_resEnable2, resEnable);
     }
 
@@ -353,7 +364,7 @@ public class PatchUtil {
 
     }
 
-    private void updatePatch(Context context, String path, boolean resIsUpdate, String absoluteRootPath,boolean isV2Patch) throws IOException {
+    private void updatePatch(Context context, String path, boolean resIsUpdate, String absoluteRootPath,boolean isV2Patch)  {
         String outApkPath = absoluteRootPath + "/dex.apk";
         File outApkFile = new File(outApkPath);
         if (outApkFile.exists()) {
@@ -362,13 +373,12 @@ public class PatchUtil {
         if (outApkFile.getParentFile() != null) {
             outApkFile.getParentFile().mkdirs();
         }
-        deleteTempFile(context);
-        if (resIsUpdate) {
+        deleteTempFile(context); //删除临时文件
+        if (resIsUpdate) { //合成包含 dex和res 的补丁包
             ResApk.toDexResApk(context, path, outApkFile.getAbsolutePath(), context.getFilesDir().getAbsolutePath() + temp,ProtectModeUtil.isProtect(context),isV2Patch);
-        } else {
+        } else { //合成只包含 dex的补丁包
             DexApk.toDexApk(context, path, outApkFile.getAbsolutePath(), context.getFilesDir().getAbsolutePath() + temp,ProtectModeUtil.isProtect(context),isV2Patch);
         }
-
 
         String libPath = absoluteRootPath + File.separator + "lib/";
         File file = new File(libPath);
@@ -376,8 +386,8 @@ public class PatchUtil {
             FileUtils.delete(file);
             file.mkdirs();
         }
-        copyApkLib(path, libPath);
-        deleteTempFile(context);
+        copyApkLib(path, libPath); //复制lib的so库
+        deleteTempFile(context); //删除临时文件
     }
 
 
