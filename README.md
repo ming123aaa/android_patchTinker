@@ -44,9 +44,9 @@ allprojects {
 
 
 
-提供了3种初始化的方式
+提供了3种初始化的方式,选择一种即可。
 
-方式1:
+方式1(接入最简单):
 
 ```xml
 
@@ -62,7 +62,7 @@ PatchApplication初始化热更后会自动替换成自己application
 
 
 
-方式2:
+方式2(推荐):
 类似于Tinker的接入方式
 让原来application的代码继承ApplicationLike,这里实现application
 
@@ -118,7 +118,7 @@ public class App extends Application {
 }
 ```
 
-### 加载补丁包:(完成后需要重启才能生效)
+### 安装补丁包:(完成后需要重启才能生效)
 PatchUtil.getInstance().installPatch()
 ```java
 
