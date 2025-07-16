@@ -34,7 +34,7 @@ public static final String TAG="MainActivity";
         findViewById(R.id.a121).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "猪猪猪",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "月半猫",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -45,7 +45,7 @@ public static final String TAG="MainActivity";
             public void onClick(View v) {
                 try {
                     startActivity(new Intent(MainActivity.this,Class.forName("com.ohuang.hotupdate.TestActivity")));
-                    Toast.makeText(MainActivity.this, "猪猪侠",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "月半猫",Toast.LENGTH_LONG).show();
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }

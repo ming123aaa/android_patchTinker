@@ -19,8 +19,11 @@ public class PatchInfo {
     /**
      * 是否加载了热更  true加载了热更
      */
-    public boolean isUpdate = false;
+    public boolean isLoadPatchSuccess = false;
 
+    /**
+     * 是否是V2补丁
+     */
     public boolean isV2Patch = false;
 
     public State state = State.NoLoadPatch;
@@ -38,7 +41,7 @@ public class PatchInfo {
     public String toString() {
         return "PatchInfo{" +
                 "PatchTinker_Version='" + patchTinkerVersion + '\'' +
-                ", isUpdate=" + isUpdate +
+                ", isLoadPatchSuccess=" + isLoadPatchSuccess +
                 ", state=" + state +
                 ", msg='" + msg + '\'' +
                 '}';
@@ -46,7 +49,7 @@ public class PatchInfo {
 
     public PatchInfo copy() {
         PatchInfo patchInfo = new PatchInfo();
-        patchInfo.isUpdate = isUpdate;
+        patchInfo.isLoadPatchSuccess = isLoadPatchSuccess;
         patchInfo.msg = msg;
         patchInfo.state = state;
         patchInfo.patchTinkerVersionForInstall = patchTinkerVersionForInstall;

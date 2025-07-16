@@ -9,10 +9,16 @@ android {
         applicationId "com.ohuang.hotupdate"
         minSdk 23
         targetSdk 34
-        versionCode 1
+        versionCode 3
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                PatchTinker_Version: "$versionCode",
+        ]
+
+        buildConfigField "long", "PATCH_VERSION", "$versionCode"
+        resValue("string", "patch_version", "$versionCode")
     }
 
     signingConfigs {

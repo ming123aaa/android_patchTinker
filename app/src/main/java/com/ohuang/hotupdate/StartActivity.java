@@ -32,6 +32,8 @@ public class StartActivity extends Activity {
 
 
         setContentView(getResources().getIdentifier("activity_start", "layout", this.getPackageName()));
+
+        Toast.makeText(this, "version="+PatchVersion.getVersionForString(this), Toast.LENGTH_LONG).show();
         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,7 +60,11 @@ public class StartActivity extends Activity {
                             @Override
                             public void run() {
 
-                                PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk,false);
+                                try {
+                                    PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk,false);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
 
                                 v.post(new Runnable() {
                                     @Override
@@ -103,7 +109,11 @@ public class StartActivity extends Activity {
                             @Override
                             public void run() {
 
-                                PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk,true);
+                                try {
+                                    PatchTinker.getInstance().installPatch(StartActivity.this, str_patch_apk,true);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
 
                                 v.post(new Runnable() {
                                     @Override

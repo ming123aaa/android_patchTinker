@@ -28,7 +28,7 @@
             android:value=":phoenix" />
         <meta-data
             android:name="PatchTinker_Version"
-            android:value="444" />
+            android:value="${PatchTinker_Version}" />
         <meta-data
             android:name="Application_Name"
             android:value="com.ohuang.hotupdate.TestApp" />

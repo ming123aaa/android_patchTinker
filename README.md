@@ -20,7 +20,7 @@ allprojects {
 
 ```groovy
     dependencies {
-    implementation 'com.github.ming123aaa:android_patchTinker:2.0.0' //请使用最新
+    implementation 'com.github.ming123aaa:android_patchTinker:2.0.2' //请使用最新
 }
 ```
 
@@ -38,10 +38,7 @@ allprojects {
   PatchTinker.getInstance().getPatchTinkerVersion(this);
 ```
 
-通过以下代码获取补丁包信息
-```
-PatchTinker.getInstance().getPatchInfo()
-```
+
 
 ### 初始化
 
@@ -54,8 +51,7 @@ PatchTinker.getInstance().getPatchInfo()
 ```xml
 
 <application android:name="com.ohuang.patchtinker.PatchApplication">
-    <meta-data android:name="Application_Name" android:value="com.ohuang.hotupdate.TestApp" />
-    <meta-data android:name="PatchTinker_WhiteProcess" android:value=":phoenix" />
+    <meta-data android:name="Application_Name" android:value="MyApplication" />
 </application>
 ```
 
@@ -123,13 +119,64 @@ public class App extends Application {
 ```
 
 ### 加载补丁包:(完成后需要重启才能生效)
-patch_path:补丁包路径
+PatchUtil.getInstance().installPatch()
+```java
 
-isV2Patch:是否是V2补丁包
+/***
+ *
+ * @param context
+ * @param patchFilePath 补丁包路径
+ * @param isV2Patch  是否是V2版本的补丁
+ */
+public boolean installPatch(Context context, String patchFilePath,
+                            boolean isV2Patch);
 
-PatchTinker.getInstance().installPatch(context, patch_path,isV2Patch);//方法是同步的，不要在主线程执行
+/**
+ * @param context
+ * @param patchFilePath 补丁包路径
+ * @param isV2Patch     是否是V2版本的补丁
+ * @param installInfo   补丁包信息, 用于记录补丁包的信息  补丁加载完成后可通过getPatchInfo().installInfo获取
+ */
+public boolean installPatch(Context context, String patchFilePath,
+                            boolean isV2Patch, String installInfo);
+    
+    /**
+ * @param context
+ * @param patchFilePath 补丁包路径
+ * @param isUpdateRes   资源是否热更  
+ * @param isV2Patch     是否是V2版本的补丁
+ * @param installInfo   补丁包信息, 用于记录补丁包的信息 安装补丁完成重启app后可通过getInstallInfo()获取
+ * @param  clearUnUsePatch  删除未被使用的补丁 (补丁加载完成后,自动删除之前的补丁,会增加本次耗时)
+ * return true  安装成功
+ */
 
+public  boolean  installPatch (Context context, String patchFilePath, 
+                               boolean isUpdateRes, boolean isV2Patch, 
+                               String installInfo,boolean clearUnUsePatch);
 
+```
+### 补丁包信息
+通过以下代码获取补丁包信息
+```java
+/**
+ *  补丁包是否load成功
+ * @return
+ */
+public boolean isLoadPatchSuccess();
+
+/**
+ * 通过 installPatch()的时候写的
+ * 补丁安装时写入的信息
+ */
+public String getInstallInfo();
+
+/**
+ * 获取补丁加载结果
+ * @return
+ */
+public PatchInfo getPatchInfo();
+
+```
 
 
 ### 进程白名单
@@ -147,7 +194,7 @@ android:name="PatchTinker_WhiteProcess"/> 1.0.5以后的版本才生效 进程�
 
 ### 类白名单
 android sdk 24及以上版本支持
-可根据startWith、equals来匹配类名,匹配到的类不进行热更。(配置多个类用,隔开 )
+可根据startWith、equals来匹配类名,匹配到的类不进行热更,一般建议使用startWith(可以匹配到内部类)。(配置多个类用,隔开 )
 记得防止类名被混淆
 ```xml
 
