@@ -244,7 +244,10 @@ dex差分包:将新老apk的dex转smali后、运行[生成差分包文件.bat](t
 
 混淆配置
 ```
+#防止被混淆
 -keep class com.ohuang.patchtinker.**{*;}
+#防止inline
+-dontoptimize
 ```
 
 每次打完包记得保存 mapping.txt 文件用于下次打补丁包配置
@@ -262,3 +265,13 @@ dex差分包:将新老apk的dex转smali后、运行[生成差分包文件.bat](t
 使用gradle plugin版本高于4.2时，可能会因为自动开启资源优化导致资源名称被混淆，无法正常解析apk包。解决方案：在gradle.properties 中新增android.enableResourceOptimizations=false，重新生成基线包和修复包，然后再生成补丁。
 
 如果开启了代码混淆，需要关闭R8，不然会导致生成的补丁较大。解决方案：在gradle.properties 中新增android.enableR8=false，重新生成基线包和修复包，然后再生成补丁。
+```
+android {
+   buildTypes {
+       release {
+           // 关闭 R8.
+           minifyEnabled false
+       }
+   }
+}
+```
