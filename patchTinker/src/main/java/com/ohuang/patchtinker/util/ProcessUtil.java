@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class ProcessUtil {
@@ -55,11 +56,7 @@ public class ProcessUtil {
 
     public static String getMainProcessName(Context context) {
 
-        try {
-            return context.getPackageManager().getApplicationInfo(context.getPackageName(), 0).processName;
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return context.getPackageName();
 
     }
 
@@ -72,7 +69,7 @@ public class ProcessUtil {
      */
 
     public static boolean isMainProcess(Context context) {
-        return isPidOfProcessName(context, android.os.Process.myPid(), getMainProcessName(context));
+        return getMainProcessName(context).equals(getCurrentProcessName(context));
 
     }
 
@@ -80,10 +77,28 @@ public class ProcessUtil {
     public static String getCurrentProcessName(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             String processName = Application.getProcessName();
-            if (!TextUtils.isEmpty(processName)){
+            if (!TextUtils.isEmpty(processName)) {
                 return processName;
             }
+        } else {
+            try {
+                Class<?> activityThread = null;
+                activityThread = Class.forName("android.app.ActivityThread");
+                Method currentProcessName = activityThread.getDeclaredMethod("currentProcessName");
+                String processName = (String) currentProcessName.invoke(null);
+                if (!TextUtils.isEmpty(processName)) {
+                    return processName;
+                }
+            } catch (Throwable e) {
+
+            }
+
         }
+
+        return getCurrentProcessNameByActivityManager(context);
+    }
+
+    public static String getCurrentProcessNameByActivityManager(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null) {
@@ -96,6 +111,7 @@ public class ProcessUtil {
                 }
             }
         }
-        return null;
+
+        return "";
     }
 }
