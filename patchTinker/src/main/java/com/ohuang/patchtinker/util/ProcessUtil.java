@@ -1,8 +1,11 @@
 package com.ohuang.patchtinker.util;
 
 import android.app.ActivityManager;
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -75,6 +78,12 @@ public class ProcessUtil {
 
 
     public static String getCurrentProcessName(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            String processName = Application.getProcessName();
+            if (!TextUtils.isEmpty(processName)){
+                return processName;
+            }
+        }
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null) {
