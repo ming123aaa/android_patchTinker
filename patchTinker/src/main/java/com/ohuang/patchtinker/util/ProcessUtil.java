@@ -69,13 +69,12 @@ public class ProcessUtil {
      */
 
     public static boolean isMainProcess(Context context) {
-
         return isPidOfProcessName(context, android.os.Process.myPid(), getMainProcessName(context));
 
     }
 
 
-    public static String getCurrentProcessNameByActivityManager(Context context) {
+    public static String getCurrentProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null) {

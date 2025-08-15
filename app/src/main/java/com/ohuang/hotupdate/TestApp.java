@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.ohuang.patchtinker.util.ProcessUtil;
+
 public class TestApp extends Application {
 
 public static final String TAG="TestApp";
@@ -21,6 +23,7 @@ public static final String TAG="TestApp";
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: 新代码");
+
 
     }
 

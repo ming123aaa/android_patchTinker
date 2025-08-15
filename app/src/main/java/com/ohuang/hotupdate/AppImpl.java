@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.ohuang.patchtinker.tinker.ApplicationLike;
+import com.ohuang.patchtinker.util.ProcessUtil;
 
 public class AppImpl extends ApplicationLike {
     public static final String TAG="AppImpl";
@@ -16,6 +17,10 @@ public class AppImpl extends ApplicationLike {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: 新代码");
+        String currentProcessName = ProcessUtil.getCurrentProcessName(getApplication());
+        String mainProcessName = ProcessUtil.getMainProcessName(getApplication());
+        boolean mainProcess = ProcessUtil.isMainProcess(getApplication());
+        Log.d(TAG, "onCreate: 当前进程:"+currentProcessName+" 主进程:"+mainProcessName+" 是否是主进程:"+mainProcess);
     }
 
     @Override

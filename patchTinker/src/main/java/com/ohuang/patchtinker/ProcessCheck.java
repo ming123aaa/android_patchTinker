@@ -8,8 +8,6 @@ import android.text.TextUtils;
 
 import com.ohuang.patchtinker.util.ProcessUtil;
 
-import java.util.List;
-
 public class ProcessCheck {
 
     private static final String key = "PatchTinker_WhiteProcess";
@@ -21,7 +19,11 @@ public class ProcessCheck {
      * @return
      */
     public static boolean check(Context context) {
-        String currentProcessNameByActivityManager = ProcessUtil.getCurrentProcessNameByActivityManager(context);
+        String whiteProcessConfig = getWhiteProcessConfig(context);
+        if (TextUtils.isEmpty(whiteProcessConfig)){
+            return true;
+        }
+        String currentProcessNameByActivityManager = ProcessUtil.getCurrentProcessName(context);
         if (TextUtils.isEmpty(currentProcessNameByActivityManager)) {
             return true;
         }

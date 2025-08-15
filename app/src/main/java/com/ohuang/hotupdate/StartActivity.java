@@ -89,8 +89,14 @@ public class StartActivity extends Activity {
 
             }
         });
-
         findViewById(R.id.btn_restart).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProcessPhoenix.triggerRebirth(StartActivity.this);
+            }
+        });
+
+        findViewById(R.id.btn_start3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText viewById = findViewById(R.id.edit_url);
