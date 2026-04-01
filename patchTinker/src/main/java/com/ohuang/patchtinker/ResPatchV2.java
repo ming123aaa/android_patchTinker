@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 public class ResPatchV2 {
 
 
-    static boolean getResPatch(Context context, String str_ori) {
+    public static boolean getResPatch(Context context, String str_ori) {
       return   tinkerResPatch(context, str_ori);
     }
 
@@ -19,7 +19,7 @@ public class ResPatchV2 {
      * @param context
      * @param str_ori
      */
-    static boolean tinkerResPatch(Context context, String str_ori) {
+    public static boolean tinkerResPatch(Context context, String str_ori) {
         try {
 
             addAssetPath(getSystemResPatch(), str_ori);
@@ -32,19 +32,19 @@ public class ResPatchV2 {
         return true;
     }
 
-     static AssetManager getSystemResPatch() throws Throwable {
+     public static AssetManager getSystemResPatch() throws Throwable {
         Method addAssetPath = AssetManager.class.getDeclaredMethod("getSystem");
         addAssetPath.setAccessible(true);
         return (AssetManager) addAssetPath.invoke(null);
     }
 
-     static void addAssetPath(AssetManager assetManager, String path) throws Throwable {
+     public static void addAssetPath(AssetManager assetManager, String path) throws Throwable {
         Method addAssetPath = assetManager.getClass().getDeclaredMethod("addAssetPath", String.class);
         addAssetPath.setAccessible(true);
         addAssetPath.invoke(assetManager, path);
     }
 
-     static void addAssetPathAsSharedLibrary(AssetManager assetManager, String path) throws Throwable {
+     public static void addAssetPathAsSharedLibrary(AssetManager assetManager, String path) throws Throwable {
         Method addAssetPath = assetManager.getClass().getDeclaredMethod("addAssetPathAsSharedLibrary", String.class);
         addAssetPath.setAccessible(true);
         addAssetPath.invoke(assetManager, path);

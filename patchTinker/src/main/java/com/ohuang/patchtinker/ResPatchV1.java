@@ -9,7 +9,7 @@ public class ResPatchV1 {
 
 
 
-     static void getResPatch(Context context, String str_ori) {
+    public static void getResPatch(Context context, String str_ori) {
         tinkerResPatch(context, str_ori);
 
     }
@@ -20,7 +20,7 @@ public class ResPatchV1 {
      * @param context
      * @param str_ori
      */
-     static void tinkerResPatch(Context context,String str_ori){
+    public static void tinkerResPatch(Context context,String str_ori){
         try {
             TinkerResourcePatcher.isResourceCanPatch(context);
             TinkerResourcePatcher.monkeyPatchExistingResources(context,str_ori,false);
