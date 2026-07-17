@@ -2,6 +2,7 @@ package com.ohuang.hotupdate;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,13 +20,14 @@ public class TestActivity extends AppCompatActivity {
 
         TextView viewById = findViewById(R.id.tv_test);
         Log.d(TAG, "onCreate: tv_test=" + viewById + "  id=" + R.id.tv_test);
-        viewById.setText("月半猫");
+        viewById.setText("哈基米");
         findViewById(R.id.iv_icon2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(TestActivity.this, "月半猫", Toast.LENGTH_LONG).show();
+                Toast.makeText(TestActivity.this, "哈基米", Toast.LENGTH_LONG).show();
             }
         });
+
 
 //        ImageView imageView = findViewById(R.id.iv_icon2);
 //        Log.d(TAG, "onCreate: iv_icon2="+imageView+"  id="+R.id.iv_icon2);

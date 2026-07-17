@@ -26,5 +26,5 @@ android {
 }
 
 dependencies {
-
+    api("com.github.tiann:FreeReflection:3.2.2")
 }

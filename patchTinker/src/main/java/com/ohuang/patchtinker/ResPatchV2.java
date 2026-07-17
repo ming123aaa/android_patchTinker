@@ -2,15 +2,20 @@ package com.ohuang.patchtinker;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+
+import com.ohuang.patchtinker.tinker.TinkerResourcePatcher;
+import com.ohuang.patchtinker.util.PatchIdManager;
 
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ResPatchV2 {
 
 
-    public static boolean getResPatch(Context context, String str_ori) {
-      return   tinkerResPatch(context, str_ori);
-    }
 
 
     /**
@@ -22,9 +27,9 @@ public class ResPatchV2 {
     public static boolean tinkerResPatch(Context context, String str_ori) {
         try {
 
-            addAssetPath(getSystemResPatch(), str_ori);
-//            TinkerResourcePatcher.isResourceCanPatch(context);
-//            TinkerResourcePatcher.monkeyPatchExistingResources(context,str_ori,false);
+            PatchIdManager.loadResPatch(context,str_ori);
+
+
         } catch (Throwable e) {
             e.printStackTrace();
             return false;
@@ -32,17 +37,10 @@ public class ResPatchV2 {
         return true;
     }
 
-     public static AssetManager getSystemResPatch() throws Throwable {
-        Method addAssetPath = AssetManager.class.getDeclaredMethod("getSystem");
-        addAssetPath.setAccessible(true);
-        return (AssetManager) addAssetPath.invoke(null);
-    }
 
-     public static void addAssetPath(AssetManager assetManager, String path) throws Throwable {
-        Method addAssetPath = assetManager.getClass().getDeclaredMethod("addAssetPath", String.class);
-        addAssetPath.setAccessible(true);
-        addAssetPath.invoke(assetManager, path);
-    }
+
+
+
 
      public static void addAssetPathAsSharedLibrary(AssetManager assetManager, String path) throws Throwable {
         Method addAssetPath = assetManager.getClass().getDeclaredMethod("addAssetPathAsSharedLibrary", String.class);

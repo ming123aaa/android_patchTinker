@@ -42,10 +42,10 @@ public class DexApkV2 {
             }
         });
         File patchDex = new File(tmpPath + "/patchDex");
-        final int[] classesNum = {findClassesNum(patchDex)};
+        final int[] classesNum = {FindDex.sortDex(patchDex)};
         File baseDex = new File(tmpPath + "/baseDex");
         classesNum[0]++;
-        findClassForOrder(baseDex, new CallBack() {
+        FindDex.findSortDex(baseDex, new FindDex.CallBack() {
             @Override
             public void call(File file) {
                 if (classesNum[0] == 1) {
@@ -60,38 +60,5 @@ public class DexApkV2 {
 
     }
 
-    private static int findClassesNum(File file) {
-        String absolutePath = file.getAbsolutePath();
-        int num = 0;
-        File file1 = new File(absolutePath + "/classes.dex");
-        if (!file1.exists()) {
-            return num;
-        }
-        num = 2;
-        while (new File(absolutePath + "/classes" + num + ".dex").exists()) {
-            num++;
-        }
-        return num - 1;
-    }
 
-    private static void findClassForOrder(File file, CallBack callBack) {
-        String absolutePath = file.getAbsolutePath();
-        int num = 0;
-        File file1 = new File(absolutePath + "/classes.dex");
-        if (!file1.exists()) {
-            return;
-        } else {
-            callBack.call(file1);
-        }
-        num = 2;
-        while (new File(absolutePath + "/classes" + num + ".dex").exists()) {
-            callBack.call(new File(absolutePath + "/classes" + num + ".dex"));
-            num++;
-        }
-
-    }
-
-    private interface CallBack {
-        void call(File file);
-    }
 }

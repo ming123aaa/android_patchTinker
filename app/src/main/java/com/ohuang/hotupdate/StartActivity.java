@@ -30,9 +30,11 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
 
 
+        setContentView(R.layout.activity_start);
 
-        setContentView(getResources().getIdentifier("activity_start", "layout", this.getPackageName()));
+//        setContentView(getResources().getIdentifier("activity_start", "layout", this.getPackageName()));
 
+      PatchTinker.getInstance().disablePatch(this);
         Toast.makeText(this, "version="+PatchVersion.getVersionForString(this), Toast.LENGTH_LONG).show();
         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
             @Override

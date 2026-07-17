@@ -126,6 +126,38 @@ public class ZipUtil {
         }
     }
 
+    public static String readZipEntry(String zipPath, String entryName) {
+        ZipFile zipFile = null;
+        try {
+            zipFile = new ZipFile(zipPath);
+            ZipEntry entry = zipFile.getEntry(entryName);
+
+            if (entry == null) {
+                return null; // 文件不存在
+            }
+
+            InputStream is = zipFile.getInputStream(entry);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                baos.write(buffer, 0, len);
+            }
+            is.close();
+
+            return baos.toString("UTF-8"); // 文本内容
+            // 如果是二进制数据，用 baos.toByteArray()
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (zipFile != null) {
+                try { zipFile.close(); } catch (IOException e) { }
+            }
+        }
+    }
+
     public static String unzip(String zipFilePath, String outDirPath) {
         boolean b = outDirPath.endsWith("/") || outDirPath.endsWith("\\");
         if (!b) {

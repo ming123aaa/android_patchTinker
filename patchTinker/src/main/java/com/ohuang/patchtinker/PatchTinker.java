@@ -1,5 +1,6 @@
 package com.ohuang.patchtinker;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
@@ -49,9 +50,9 @@ public class PatchTinker {
     }
 
 
-
     /**
      * 获取补丁加载结果
+     *
      * @return
      */
     public PatchInfo getPatchInfo() {
@@ -105,7 +106,7 @@ public class PatchTinker {
     }
 
     /**
-     * 删除未被使用的补丁
+     * 清除未被使用的补丁
      *
      * @param context
      */
@@ -114,10 +115,19 @@ public class PatchTinker {
     }
 
     /**
-     * 卸载补丁
+     * 禁用当前的补丁
      *
      * @param context
      */
+    public synchronized void disablePatch(Context context) {
+        PatchUtil.getInstance().disablePatch(context);
+    }
+
+    /**
+     * 请使用  {@link #disablePatch}
+     * @param context
+     */
+    @Deprecated(since = "请使用disablePatch(context)方法",forRemoval=true)
     public synchronized void uninstallPatch(Context context) {
         PatchUtil.getInstance().unInstallPatchApk(context);
     }

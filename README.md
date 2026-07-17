@@ -1,12 +1,13 @@
-推荐使用最新的V2版本的,优化了补丁的大小和补丁加载的时间
-本项目在2.0.0以上的版本也支持V2版本补丁方式。
+推荐使用最新的V2版本的补丁,优化了补丁的大小和补丁加载的时间
+V2版本补丁方式需要在2.0.0以上的版本支持
 ### 注意
 暂不支持代码和资源的混淆
 1.需要在 gradle.properties添加 android.enableResourceOptimizations=false 避免资源优化导致异常
 2.AndroidManifest.xml 无法热更。
 3.热更新框架本身无法被热更。
 4.热更后需要重启应用才能生效。
-5.v2版本的补丁无法修改已存在的assets的资源(若要修改，只需修改一下文件名)
+5.v2版本的补丁无法修改已存在的assets的资源(若要修改，只需修改一下文件名)。
+6.attr 和 style 不完全支持热更(因为AndroidManifest.xml无法热更)。
 
 ### 引用
 
@@ -56,10 +57,8 @@ allprojects {
 ```
 
 将application的name设置为com.ohuang.patchtinker.PatchApplication
-<meta-data android:name="Application_Name">设置为自己的application
+<meta-data android:name="Application_Name" android:value="MyApplication" >将MyApplication设置为自己的application
 PatchApplication初始化热更后会自动替换成自己application
-
-
 
 
 方式2(推荐):
@@ -216,20 +215,18 @@ android sdk 24及以上版本支持
 
 ### 补丁包生成  V1方式
 
-最新方式:
-运行[生成补丁包.bat](tool/生成补丁包.bat)
 
-如果不需要资源热更:
+运行[生成差异补丁.bat](tool/生成v1补丁.bat)
+
+资源不热更(通常用于sdk热更):
 运行[生成补丁包(无资源).bat](tool/生成补丁包(无资源).bat)
 
 
-~~之前的打包方式:
-res、assets、lib等差分包生成:新老apk解压后 运行[生成差分包文件.bat](tool/生成差分文件.bat)
-dex差分包:将新老apk的dex转smali后、运行[生成差分包文件.bat](tool/生成差分文件.bat) 在重新打成dex
-最后将dex和资源压缩成zip格式~~
-
-
 ### 补丁包生成  V2方式(需要2.0.0的版本以上才支持)
+方式一:
+运行[生成差异v2补丁.bat](tool/生成v2补丁.bat)
+
+方式二:
 使用阿里的SophixPatchTool打包,需要取消检查初始化选项，需要取消检查初始化选项，需要取消检查初始化选项。
 补丁包生成需要使用打补丁工具SophixPatchTool，如还未下载打补丁工具，请前往下载Android打包工具。
 打包工具下载地址如下：

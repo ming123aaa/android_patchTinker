@@ -1,6 +1,7 @@
 package com.ohuang.hotupdate;
 
 import android.app.Application;
+import android.app.Service;
 import android.content.Context;
 import android.util.Log;
 

@@ -324,12 +324,17 @@ public class PatchUtil {
      * @param context
      */
     public void unInstallPatchApk(Context context) {
-        OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isLoader, false);
-        OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_USE_PATCH2, false);
+        disablePatch(context);
         deletePatch(context, true);
         deletePatch(context, false);
 
     }
+
+    public void disablePatch(Context context){
+        OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_isLoader, false);
+        OHKVUtil.getInstance(SP_PatchUtil).put(context, SP_KEY_USE_PATCH2, false);
+    }
+
 
     /**
      * 更新补丁包
